@@ -1,10 +1,11 @@
-// verify.js - Anti-bypass + One-time + Real Click - GitHub Only
+// verify.js - Advanced Anti-Bypass (2-Step Verification)
 let EP=null, POST=null, SHORTS=[];
 
 async function init(){
-  const params=new URLSearchParams(location.search);
-  const postId=params.get('id');
-  const epId=params.get('ep');
+  const params = new URLSearchParams(location.search);
+  const postId = params.get('id');
+  const epId = params.get('ep');
+  const isDone = params.get('done') === '1'; // Shortener return check
   const $ = id=>document.getElementById(id);
 
   if(!postId||!epId){
@@ -12,146 +13,131 @@ async function init(){
     return;
   }
 
-  // Anti-bypass Step 1: Check sessionStorage pending + referrer
-  const pending=sessionStorage.getItem('pending_ep');
-  const ptime=parseInt(sessionStorage.getItem('pending_time')||'0');
-  const now=Date.now();
-  const ref=document.referrer||'';
-  const allowedRef = ref.includes(location.hostname) || /gplinks|shrink|linkvertise|short|adfoc|gyanilinks/i.test(ref) || (pending===epId && (now-ptime)<15*60*1000);
+  // Anti-bypass Step 1: Check session referrer (agar first time hai)
+  if(!isDone) {
+      const pending=sessionStorage.getItem('pending_ep');
+      const ptime=parseInt(sessionStorage.getItem('pending_time')||'0');
+      const ref=document.referrer||'';
+      const allowedRef = ref.includes(location.hostname) || (pending===epId && (Date.now()-ptime)<15*60*1000);
 
-  if(!allowedRef){
-    $('msg').innerHTML='⚠️ Direct open blocked.<br>Please go to post page, click <b>Download</b>, solve shortener, then you will come here.<br><br><a class="pill" href="index.html">Go Home</a>';
-    return;
+      if(!allowedRef){
+        $('msg').innerHTML='⚠️ Direct link blocked. <br>Please open from our website.<br><a class="pill" href="index.html">Go Home</a>';
+        return;
+      }
   }
 
-  // Load data/data.json
+  // Load data.json
   let data;
   try{
     const r=await fetch('data/data.json?'+Date.now(),{cache:'no-store'});
     data=await r.json();
   }catch(e){
-    $('msg').textContent='data.json load fail';
-    return;
+    $('msg').textContent='Failed to load DB.'; return;
   }
 
   const post=(data.posts||[]).find(p=>p.id===postId);
-  if(!post){ $('msg').textContent='Post not found'; return; }
-  const ep=(post.eps||[]).find(e=>e.id===epId);
+  const ep=post ? (post.eps||[]).find(e=>e.id===epId) : null;
+  
   if(!ep){ $('msg').textContent='Episode not found'; return; }
 
   POST=post; EP=ep; SHORTS=ep.short||[];
 
-  // One-time check - same user 5 min ke andar dobara allow, par share karne wale ke paas pending nahi hoga to block ho chuka hai upar
-  const usedKey='used_'+ep.id;
-  const used=localStorage.getItem(usedKey);
-  if(used && (now-parseInt(used))<5*60*1000){
-    // allow re-show within 5 min for same user
+  if (isDone) {
+      // 🟢 STEP 2: USER RETURNED FROM SHORTENER
+      if(sessionStorage.getItem('human_verified') !== '1') {
+          // Bypass attempt pakda gaya
+          $('msg').innerHTML = '<span style="color:#ef4444">⚠️ Verification Bypass Detected!</span><br>Please do not skip ads.<br><a href="index.html">Go Home</a>';
+          return;
+      }
+      
+      $('title').textContent = `Download: ${post.name}`;
+      $('msg').innerHTML = '<span style="color:#22c55e">✅ Shortener Solved!</span>';
+      showRealLink();
+  } else {
+      // 🟠 STEP 1: FIRST TIME VISIT (Show Hold Button)
+      $('title').textContent=`Verify: ${post.name} S${ep.s} E${ep.n}`;
+      $('msg').textContent='Bot check required to generate link.';
+      $('human').style.display='block';
+      setupHold();
   }
-
-  $('title').textContent=`Verify: ${post.name} S${ep.s} E${ep.n}`;
-  $('msg').textContent='Human check required to prevent bot bypass.';
-  $('human').style.display='block';
-  setupHold();
 }
 
 function setupHold(){
-  const btn=document.getElementById('holdBtn');
-  const prog=document.getElementById('prog');
-  const txt=document.getElementById('htxt');
+  const btn=document.getElementById('holdBtn'), prog=document.getElementById('prog'), txt=document.getElementById('htxt');
   let holdTimer=null, progress=0, holding=false;
 
   function start(e){
-    e.preventDefault();
-    if(holding) return;
-    holding=true; progress=0;
+    e.preventDefault(); if(holding) return; holding=true; progress=0;
     holdTimer=setInterval(()=>{
       progress+=2;
-      if(progress>=100){
-        progress=100;
-        clearInterval(holdTimer);
-        success();
-      }
-      prog.style.width=progress+'%';
-      txt.textContent=`Holding ${Math.floor(progress/33.3)}/3s...`;
+      if(progress>=100){ progress=100; clearInterval(holdTimer); success(); }
+      prog.style.width=progress+'%'; txt.textContent=`Verifying ${Math.floor(progress/33.3)}/3s...`;
     },60);
   }
   function end(){
-    if(!holding) return;
-    holding=false;
-    clearInterval(holdTimer);
-    if(progress<100){
-      progress=0;
-      prog.style.width='0%';
-      txt.textContent='Hold 3s to Verify';
-    }
+    if(!holding) return; holding=false; clearInterval(holdTimer);
+    if(progress<100){ progress=0; prog.style.width='0%'; txt.textContent='Hold 3s to Verify'; }
   }
-  btn.addEventListener('mousedown', start);
-  btn.addEventListener('mouseup', end);
-  btn.addEventListener('mouseleave', end);
-  btn.addEventListener('touchstart', start,{passive:false});
-  btn.addEventListener('touchend', end);
+  btn.addEventListener('mousedown', start); btn.addEventListener('mouseup', end); btn.addEventListener('mouseleave', end);
+  btn.addEventListener('touchstart', start,{passive:false}); btn.addEventListener('touchend', end);
 }
 
+// WHEN 3 SECONDS HOLD FINISHED (SHOW ONLY SHORTENER LINK)
 async function success(){
   const $=id=>document.getElementById(id);
   $('human').style.display='none';
   const after=$('after');
   after.style.display='block';
-  after.innerHTML='<p class="mu">Verified! Opening shortener...</p>';
 
-  // One-time mark - iske baad share karne se kaam nahi karega kyunki dusre user ke paas pending flag nahi
-  localStorage.setItem('used_'+EP.id, Date.now().toString());
-  sessionStorage.setItem('human_verified','1');
+  sessionStorage.setItem('human_verified','1'); // Save flag for step 2
 
   if(SHORTS.length){
     const rot=parseInt(localStorage.getItem('rot')||'0');
     localStorage.setItem('rot',(rot+1).toString());
     const shortUrl=SHORTS[rot % SHORTS.length];
 
-    after.innerHTML+=`
-      <p>Shortener open ho raha hai:<br><small class="mu">${shortUrl}</small></p>
-      <button class="pill" style="background:#ff8c00;color:#111;width:100%;margin-top:10px;padding:10px" onclick="window.open('${shortUrl}','_blank')">Open Short Link Now</button>
-      <p class="mu" style="margin-top:10px">Shortener solve karne ke baad asli download milega. Bypass APK isko bypass nahi kar payega kyunki real click verify chahiye.</p>
+    after.innerHTML=`
+      <h3 style="color:#ff8c00">Link Generated!</h3>
+      <p class="mu">Ad solve karne ke baad yahi page aayega aur Original link milega.</p>
+      <button class="pill" style="background:#ff8c00;color:#111;width:100%;margin-top:15px;padding:14px;font-size:16px;font-weight:900" onclick="window.location.href='${shortUrl}'">Go to Download Link</button>
     `;
-
-    // Real link decrypt after real click - vk is obfuscated global vk (same as admin uses to encrypt pd)
-    try{
-      const vk=await getGlobalVk();
-      const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-      // pd is encrypted real DL with global vk
-      const real=await dec(EP.pd, vk);
-      if(real && /^https?:\/\//i.test(real)){
-        after.innerHTML+=`
-          <div style="margin-top:14px;padding:10px;border:1px dashed #ff8c00;border-radius:10px">
-            <p class="mu">Real Link (One-time, 5 min ke liye):</p>
-            <a href="${esc(real)}" target="_blank" style="color:#ff8c00;word-break:break-all">${esc(real)}</a>
-            <p class="mu" style="margin-top:6px">Ye link 5 min baad hide ho jayega. Kisi ko share karoge to usko fir se shortener + verify karna padega, isliye share karne se kaam nahi karega.</p>
-          </div>
-        `;
-        setTimeout(()=>{
-          after.innerHTML='<p class="mu">Link expired. Please click Download again on post page.</p>';
-          localStorage.removeItem('used_'+EP.id);
-          sessionStorage.removeItem('pending_ep');
-          sessionStorage.removeItem('human_verified');
-        },5*60*1000);
-      }
-    }catch(e){ console.log(e); }
-
   }else{
-    after.innerHTML='<p class="mu">No short links configured in data.json</p>';
+    after.innerHTML='<p class="mu">No short links configured by admin.</p>';
   }
 }
 
-// Global VK - same as admin uses to encrypt pd, obfuscated but needed for normal users after human verify
-async function getGlobalVk(){
-  // In production, admin panel encrypts pd with this same vk = SHA256('Hindi Subbed Anime_VK_BULLETPROOF_2024')
-  const s='Hindi Subbed Anime_VK_BULLETPROOF_2024';
-  const h=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
-  return h;
+// SHOW REAL LINK DECRYPTED
+async function showRealLink() {
+    const after = document.getElementById('after');
+    after.style.display = 'block';
+    
+    try {
+      const vk = await getGlobalVk();
+      const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      const real = await dec(EP.pd, vk);
+      
+      if(real && /^https?:\/\//i.test(real)){
+        after.innerHTML = `
+          <div style="margin-top:10px;padding:20px;border:1px dashed #22c55e;border-radius:12px;background:#1a1d26">
+            <h3 style="color:#22c55e;margin:0 0 10px">🎉 File Unlocked!</h3>
+            <p class="mu" style="margin-bottom:15px">Aapka direct download link ready hai:</p>
+            <a href="${esc(real)}" target="_blank" class="pill" style="display:inline-block;background:#22c55e;color:#111;padding:12px 20px;font-size:15px;font-weight:900;width:100%;text-align:center;">Click Here To Download</a>
+          </div>
+        `;
+        // Security clean up
+        sessionStorage.removeItem('human_verified');
+        sessionStorage.removeItem('pending_ep');
+      } else {
+        after.innerHTML = '<p style="color:#ef4444">Decryption failed. Please contact admin.</p>';
+      }
+    } catch(e) { console.log(e); }
 }
 
+async function getGlobalVk(){
+  const s='Hindi Subbed Anime_VK_BULLETPROOF_2024';
+  return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 function dec(b,p){
-  // reuse dec from app.js if exists, else define
   if(window.dec) return window.dec(b,p);
   return (async()=>{
     try{

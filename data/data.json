@@ -1,11 +1,34 @@
 {
   "posts": [
     {
+      "id": "mumxkixv",
+      "img": "https://t.me/hindisubinganime/704",
+      "name": "A Wild Last Boss Appeared!",
+      "cat": "Hindi Subbed Anime",
+      "gen": [
+        "Action",
+        "Adventure",
+        "Fantasy",
+        "isekai",
+        "game",
+        "reincarnation",
+        "comedy"
+      ],
+      "yr": "2026",
+      "story": "Ik number anime",
+      "updated": 1790701721064,
+      "eps": []
+    },
+    {
       "id": "mech-marie-2025",
       "img": "https://i.ibb.co/0jQvY1m/mechanical-marie.jpg",
       "name": "Mechanical Marie Hindi Subbed | Kikaijikake no Marie Hindi Sub (Complete)",
       "cat": "Romance",
-      "gen": ["Romance", "Comedy", "Sci-Fi"],
+      "gen": [
+        "Romance",
+        "Comedy",
+        "Sci-Fi"
+      ],
       "yr": "2025",
       "keywords": "mechanical marie hindi subbed kikaijikake no marie hindi sub romance complete ybx anime",
       "expiry": 0,
@@ -20,7 +43,9 @@
           "play": "",
           "lock": 0,
           "pd": "ENCRYPTED_REAL_DL_WITH_GLOBAL_VK",
-          "short": ["https://gplinks.com/demo-verify-link"]
+          "short": [
+            "https://gplinks.com/demo-verify-link"
+          ]
         }
       ]
     },
@@ -29,7 +54,11 @@
       "img": "https://i.ibb.co/XYZ/dad-hero-mom-spirit.jpg",
       "name": "Dad is a Hero, Mom is a Spirit, I'm a Reincarnator Hindi Subbed (Complete)",
       "cat": "Reincarnation",
-      "gen": ["Reincarnation", "Fantasy", "Comedy"],
+      "gen": [
+        "Reincarnation",
+        "Fantasy",
+        "Comedy"
+      ],
       "yr": "2025",
       "keywords": "dad is a hero mom is a spirit reincarnator hindi subbed complete",
       "expiry": 0,
@@ -39,7 +68,6 @@
     }
   ],
   "vip": [],
-  "paid": [],
   "cfg": {
     "head": "",
     "body": "<!-- PopAds / Monetag yahan paste karo -->",
@@ -50,6 +78,8 @@
     "web": "https://username.github.io/hindi-subbed-anime",
     "ig": "",
     "yt": "",
-    "site": "Hindi Subbed Anime"
-  }
+    "site": "Hindi Subbed Anime",
+    "sh": []
+  },
+  "sh": []
 }

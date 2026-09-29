@@ -27,22 +27,17 @@ button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:poin
 
 <h1>⚙️ Admin Panel</h1>
 
-<!-- LOGIN SECTION -->
-<div id="loginSection" style="background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:20px;margin-top:20px;">
-  <p style="color:var(--mu);font-size:12px;text-align:center">GitHub Token hi aapka password hai.</p>
-  <label>GitHub Token (PAT)</label>
-  <input id="ghTok" type="password" placeholder="github_pat_xxx...">
-  <div class="grid2">
-    <div><label>GitHub Username</label><input id="ghOwn" placeholder="e.g. asif3543"></div>
-    <div><label>Repo Name</label><input id="ghRepo" placeholder="e.g. hindi-subbed-anime"></div>
-  </div>
-  <label>Admin PIN (VIP aur Links Decrypt karne ke liye)</label>
-  <input id="adPin" type="password" placeholder="Create a strong PIN">
+<!-- LOGIN SECTION (SIRF TOKEN) -->
+<div id="loginSection" style="background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:25px 20px;margin-top:20px;text-align:center;">
+  <h2 style="border:none; margin:0 0 5px 0;">🔑 Admin Login</h2>
+  <p style="color:var(--mu);font-size:12px;margin-bottom:20px;">Sirf apna GitHub Token (Password) daaliye.</p>
   
-  <button class="go" id="btnLoad" onclick="loadFromGithub()">🔓 Login & Load Data</button>
+  <input id="ghTok" type="password" placeholder="ghp_xxxx..." style="text-align:center; font-weight:bold; font-size:16px; letter-spacing:1px; margin-bottom:15px;">
+  
+  <button class="go" id="btnLoad" onclick="loadFromGithub()">🔓 Login Panel</button>
 </div>
 
-<!-- MAIN ADMIN AREA (Hidden until logged in) -->
+<!-- MAIN ADMIN AREA -->
 <div id="appBody">
   <div class="tabs">
     <button data-t="post" class="btn on" onclick="tab('post')">Add Post</button>
@@ -129,43 +124,53 @@ button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:poin
     <p style="color:var(--mu);font-size:12px">Jab aap posts add kar lein, toh yahan se PUSH dabayein taaki site live update ho jaye.</p>
     <button class="go2" id="btnPush" onclick="pushToGithub()">🚀 Push to GitHub (Save Data)</button>
   </div>
-
 </div>
 
 <div id="log"></div>
 </div>
 
 <script>
+// ==========================================
+// YAHAN APNA USERNAME AUR REPO NAME DAALEIN
+// ==========================================
+const GITHUB_USERNAME = "asif3543"; 
+const GITHUB_REPO = "hindi-subbed-anime";
+// ==========================================
+
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let db={posts:[],vip:[],cfg:{},sh:[],paid:[]}, sha=null, vkCache=null;
+let db={posts:[],vip:[],cfg:{},sh:[],paid:[]}, sha=null;
+
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
-async function getVk(){ const pin=$('adPin').value.trim(); if(!pin) throw new Error('PIN required'); if(vkCache) return vkCache; vkCache=await H(pin+'_ASI_VK_2024_SALT'); return vkCache; }
+
+// Background encryption magic (Ab PIN ki zarurat nahi)
+async function getVk(){ return await H('Hindi Subbed Anime_VK_BULLETPROOF_2024'); }
 async function enc(t,p){ const e=new TextEncoder(); const s=crypto.getRandomValues(new Uint8Array(16)); const iv=crypto.getRandomValues(new Uint8Array(12)); const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:100000,hash:'SHA-256'},await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt']); const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,e.encode(t))); const all=new Uint8Array(s.length+iv.length+ct.length); all.set(s,0); all.set(iv,s.length); all.set(ct,s.length+iv.length); return btoa(String.fromCharCode(...all)); }
+
 function log(t,ok=true){ const el=$('log'); el.textContent=t; el.style.display='block'; el.style.borderColor=ok?'#22c55e':'#ef4444'; setTimeout(()=>el.style.display='none',4000); }
 function tab(t){ document.querySelectorAll('.p').forEach(e=>e.classList.toggle('on',e.id==='t-'+t)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); }
 
-// Load Data
+// SIRF TOKEN SE LOGIN
 async function loadFromGithub(){
-  const tok=$('ghTok').value.trim(), own=$('ghOwn').value.trim(), repo=$('ghRepo').value.trim(), pin=$('adPin').value.trim();
-  if(!tok||!own||!repo||!pin) return log('Saari details aur PIN daaliye',false);
-  $('btnLoad').disabled=true; $('btnLoad').textContent='Verifying...';
+  const tok=$('ghTok').value.trim();
+  if(!tok) return log('GitHub Token daaliye',false);
+  $('btnLoad').disabled=true; $('btnLoad').textContent='Verifying Token...';
+  
   try{
-    const r=await fetch(`https://api.github.com/repos/${own}/${repo}/contents/data/data.json`,{headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'}});
+    const r=await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data/data.json`,{headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'}});
     if(r.status===404){ db={posts:[],vip:[],cfg:{},sh:[],paid:[]}; sha=null; log('Fresh start. Ready!'); }
     else{ 
-      if(!r.ok) throw new Error("Invalid GitHub Token ya Repo Name"); 
+      if(!r.ok) throw new Error("Invalid GitHub Token"); 
       const j=await r.json(); sha=j.sha; 
       const raw=atob(j.content.replace(/\n/g,'')); const content=JSON.parse(decodeURIComponent(escape(raw))); 
       db.posts=content.posts||[]; db.vip=content.vip||[]; db.cfg=content.cfg||{}; db.sh=content.sh||[];
       ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ if($('c_'+k)) $('c_'+k).value=db.cfg[k]||''; }); 
       log(`Login Success! ${db.posts.length} posts loaded`); 
     }
-    // Show Dashboard
     $('loginSection').style.display='none';
     $('appBody').style.display='block';
     renderAll();
-  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Login & Load Data'; } 
+  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Login Panel'; } 
   $('btnLoad').disabled=false; 
 }
 
@@ -186,7 +191,6 @@ function addPost(){
   $('pName').value=''; log('Post added'); renderAll();
 }
 
-// FIX: Shortener URL Generation logic
 async function addEpisode(){
   const post=db.posts.find(x=>x.id===$('eP').value); if(!post) return log('Post select karo',false);
   const real=$('eDl').value.trim(); if(!real) return log('Real DL daalo',false);
@@ -196,7 +200,6 @@ async function addEpisode(){
   
   const epId = Date.now().toString(36);
   const baseUrl = window.location.href.split('/').slice(0,-1).join('/');
-  // VERY IMPORTANT FIX: Target URL with id, ep, and done=1
   const targetUrl = `${baseUrl}/verify.html?id=${post.id}&ep=${epId}&done=1`;
   
   const shorts=[];
@@ -211,20 +214,20 @@ async function addEpisode(){
   if(!shorts.length) { $('btnEp').textContent = '+ Add Episode'; return log('Shortener API fail',false); }
 
   const vk=await getVk();
-  const pd=await enc(real, await H('Hindi Subbed Anime_VK_BULLETPROOF_2024'));
+  const pd=await enc(real, vk);
   let play=$('ePl').value.trim(), lock=0; if(play && $('ePw').value.trim()){ play=await enc(play, $('ePw').value.trim()); lock=1; }
   
   post.eps.push({id:epId, s:$('eS').value.trim()||'01', n:$('eN').value.trim(), q:$('eQl').value, play, lock, pd, short:shorts});
-  $('eN').value=$('eDl').value=''; $('btnEp').textContent = '+ Add Episode';
+  $('eN').value=$('eDl').value=''; $('btnEp').textContent = '+ Add Episode (Auto Shortener)';
   log('Episode Added Successfully!');
 }
 
-async function addVip(){ const email=$('vE').value.trim().toLowerCase(), pass=$('vP').value.trim(); if(!email||!pass) return; const vk=await getVk(); const k=await enc(vk, pass); const h=await H(pass); db.vip.push({email,h,k,exp:Date.now()+parseInt($('vD').value)*86400000}); log('VIP added'); }
+async function addVip(){ const email=$('vE').value.trim().toLowerCase(), pass=$('vP').value.trim(); if(!email||!pass) return; const vk=await getVk(); const k=await enc(vk, pass); const h=await H(pass); db.vip.push({email,h,k,exp:Date.now()+parseInt($('vD').value)*86400000}); log('VIP added'); $('vE').value=$('vP').value=''; }
 
 async function pushToGithub(){
-  const tok=$('ghTok').value.trim(), own=$('ghOwn').value.trim(), repo=$('ghRepo').value.trim();
+  const tok=$('ghTok').value.trim();
   ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ const el=$('c_'+k); if(el) db.cfg[k]=el.value.trim(); });
-  db.cfg.sh = db.sh; // Save shorteners in config
+  db.cfg.sh = db.sh; 
   
   $('btnPush').disabled=true; $('btnPush').textContent='Pushing...';
   try{
@@ -233,7 +236,7 @@ async function pushToGithub(){
     const content=btoa(unescape(encodeURIComponent(jsonStr)));
     const body={message:`Site Update ${new Date().toISOString()}`,content}; if(sha) body.sha=sha;
     
-    const r=await fetch(`https://api.github.com/repos/${own}/${repo}/contents/data/data.json`,{method:'PUT',headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    const r=await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data/data.json`,{method:'PUT',headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'},body:JSON.stringify(body)});
     if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.content.sha; 
     log(`✅ Pushed to Live Site Successfully!`,true);
   }catch(e){ log('Push fail: '+e.message,false); } 

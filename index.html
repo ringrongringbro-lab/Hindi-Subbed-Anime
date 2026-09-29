@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hindi Subbed Anime - Watch Hindi Subbed Anime Online Lifetime Free</title>
+<meta name="description" content="Hindi Subbed Anime - Watch Hindi Subbed, Hindi Dubbed Anime, Romance, Reincarnation, Action Anime Online Lifetime Free on GitHub">
+<meta name="keywords" content="hindi subbed anime, hindi dubbed anime, mechanical marie hindi subbed, dad is a hero hindi subbed, romance anime hindi, reincarnation anime">
+<meta name="theme-color" content="#ff8c00">
+<meta property="og:title" content="Hindi Subbed Anime">
+<meta property="og:description" content="Watch Hindi Subbed Anime Lifetime Free">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+<div id="toast"></div>
+<div class="wrap">
+<header>
+  <a href="index.html" class="logo">Hindi <span>Subbed Anime</span></a>
+  <div class="search"><i>🔍</i><input id="q" placeholder="Search anime..."></div>
+  <a class="pill" href="vip.html">VIP</a>
+</header>
+
+<div class="filters">
+  <div class="row" id="cats"></div>
+  <div class="row" id="gens"></div>
+  <div class="row" id="az"></div>
+</div>
+
+<!-- GRID - Single big cards like screenshot, NOT 2 images short type -->
+<div class="grid" id="grid"></div>
+
+<div class="pg"><button id="pv">Previous</button><span id="pi"></span><button id="nx">Next</button></div>
+<div id="ban"></div>
+</div>
+
+<button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="assets/js/app.js"></script>
+<script>
+const N=8;
+let S={q:'',c:'',g:'',a:'',p:0}, ALL=[];
+const $=id=>document.getElementById(id);
+const kk=s=>String(s||'').trim().toLowerCase();
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const gens=p=>(p.gen||[]).flatMap(g=>String(g).split(/[,.;\/|]+/)).map(s=>s.trim()).filter(Boolean);
+function cdnImg(u){
+  if(!u) return 'https://placehold.co/600x338/232326/9f9fa9?text=No+Image';
+  if(u.includes('wsrv.nl')) return u;
+  return `https://wsrv.nl/?url=${encodeURIComponent(u)}&output=jpg&q=80`;
+}
+function row(id,k,map){
+  const r=$(id); r.innerHTML='';
+  [...map].sort((a,b)=>a[1].localeCompare(b[1])).forEach(([val,label])=>{
+    const b=document.createElement('button');
+    b.className='chip'+(S[k]===val?' on':'');
+    b.textContent=label;
+    b.onclick=()=>{ S[k]=S[k]===val?'':val; S.p=0; draw(); };
+    r.appendChild(b);
+  });
+}
+function draw(){
+  const cm=new Map(), gm=new Map(), am=new Map();
+  ALL.forEach(p=>{
+    if(p.cat) cm.set(kk(p.cat), cm.get(kk(p.cat))||p.cat.trim());
+    gens(p).forEach(g=>gm.set(kk(g), gm.get(kk(g))||g));
+    const a=(p.name[0]||'#').toUpperCase(); am.set(a,a);
+  });
+  row('cats','c',cm); row('gens','g',gm); row('az','a',am);
+  let f=ALL.filter(p=>{
+    if(p.expiry && p.expiry < Date.now()) return false; // auto delete
+    const key=(p.keywords||'')+' '+p.name+' '+p.cat+' '+(p.gen||[]).join(' ');
+    return kk(key).includes(S.q) && (!S.c||kk(p.cat)===S.c) && (!S.g||gens(p).some(g=>kk(g)===S.g)) && (!S.a||p.name[0].toUpperCase()===S.a);
+  }).sort((a,b)=>(b.updated||0)-(a.updated||0));
+  const total=Math.max(1,Math.ceil(f.length/N));
+  S.p=Math.min(S.p,total-1); if(S.p<0) S.p=0;
+  const slice=f.slice(S.p*N, S.p*N+N);
+  $('grid').innerHTML=slice.map(p=>{
+    const genre=(p.gen&&p.gen[0])?p.gen[0]: (p.cat||'Hindi Subbed');
+    return `<a class="card" href="post.html?id=${encodeURIComponent(p.id)}">
+      <div class="thumb">
+        <img loading="lazy" src="${esc(cdnImg(p.img))}" alt="${esc(p.name)} Hindi Subbed">
+        <div class="top-badge"><span>WATCH NOW</span><span>${esc((p.cat||'Hindi Subbed').slice(0,20))}</span></div>
+        <span class="gen-badge">${esc(genre)}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${esc(p.name)}</div>
+        <button class="watch-btn">Watch/Download...</button>
+      </div>
+    </a>`;
+  }).join('') || '<p class="mu" style="padding:20px">Kuch nahi mila. data/data.json check karo</p>';
+  $('pi').textContent=`${S.p+1} / ${total}`;
+  $('pv').disabled=S.p<=0; $('nx').disabled=S.p>=total-1;
+  $('pv').onclick=()=>{S.p--; draw(); scrollTo(0,0)}; $('nx').onclick=()=>{S.p++; draw(); scrollTo(0,0)};
+}
+async function loadData(){
+  try{
+    const r=await fetch('data/data.json?'+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw new Error();
+    const d=await r.json();
+    ALL=d.posts||[];
+    if(d.cfg){
+      if(d.cfg.head){ const t=document.createElement('template'); t.innerHTML=d.cfg.head; document.head.append(t.content); }
+      if(d.cfg.body){ const t=document.createElement('template'); t.innerHTML=d.cfg.body; document.body.append(t.content); }
+      if(d.cfg.ban && $('ban')){ const t=document.createElement('template'); t.innerHTML=d.cfg.ban; $('ban').append(t.content); }
+    }
+    draw();
+  }catch(e){ $('grid').innerHTML='<p class="mu">data/data.json load fail - GitHub par push karo</p>'; }
+}
+const inp=$('q');
+const u=new URLSearchParams(location.search);
+if(u.get('q')){ S.q=kk(u.get('q')); inp.value=u.get('q'); }
+inp.oninput=()=>{ S.q=kk(inp.value); S.p=0; draw(); };
+loadData();
+</script>
+</body>
+</html>

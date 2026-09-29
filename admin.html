@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="hi"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin - Hindi Subbed Anime - 【entity-GitHub¦canonical_name=GitHub】 Only</title>
+<title>Admin - Hindi Subbed</title>
 <meta name="robots" content="noindex, nofollow">
 <style>
 :root{--bg:#0f1115;--pn:#1a1d26;--ln:#2a2f40;--tx:#e6e8f0;--mu:#8b92a8;--ac:#ff8c00;--ok:#22c55e;--rd:#ef4444}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 system-ui}
 .w{max-width:760px;margin:auto;padding:12px 12px 90px}
-h1{font-size:20px;color:var(--ac)}h2{font-size:16px;color:var(--ac);border-bottom:1px solid var(--ln);padding-bottom:6px;margin:18px 0 8px}
+h1{font-size:20px;color:var(--ac);text-align:center;}
+h2{font-size:16px;color:var(--ac);border-bottom:1px solid var(--ln);padding-bottom:6px;margin:18px 0 8px}
 label{display:block;margin:10px 0 4px;color:var(--mu);font-size:11px;font-weight:700;text-transform:uppercase}
 input,select,textarea{width:100%;background:var(--pn);border:1px solid var(--ln);color:var(--tx);border-radius:10px;padding:11px;outline:none}
 textarea{min-height:70px}
@@ -16,131 +17,119 @@ button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:poin
 .btn.on{background:var(--ac);color:#111;border-color:var(--ac)}
 .go{background:var(--ac);color:#111;width:100%;margin-top:12px;padding:13px;font-size:15px}
 .go2{background:var(--ok);color:#111;width:100%;margin-top:12px;padding:14px}
-.danger{background:transparent;color:var(--rd);border:1px solid var(--rd);padding:6px 10px;font-size:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;border:1px solid var(--ln);background:var(--pn);border-radius:10px;margin-top:8px}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0;position:sticky;top:0;background:var(--bg);z-index:5}
 .p{display:none}.p.on{display:block}
-#log{position:fixed;left:12px;right:12px;bottom:12px;background:#111;padding:12px;border-radius:12px;border:1px solid var(--ln);display:none;z-index:99;white-space:pre-wrap}
+#log{position:fixed;left:12px;right:12px;bottom:12px;background:#111;padding:12px;border-radius:12px;border:1px solid var(--ln);display:none;z-index:99;white-space:pre-wrap;text-align:center;font-weight:bold;}
+#appBody{display:none;}
 </style></head><body><div class="w">
 
-<h1>Hindi Subbed Anime — Admin (【entity-GitHub¦canonical_name=GitHub】 Only, No Save)</h1>
-<p style="color:var(--mu);font-size:11px">Telegram auto-post hata diya hai. Sab 【entity-GitHub¦canonical_name=GitHub】 par hi hoga. Token bina koi push nahi kar payega.</p>
+<h1>⚙️ Admin Panel</h1>
 
-<div style="background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:12px">
-<label>【entity-GitHub¦canonical_name=GitHub】 Token (Fine-grained, Contents: Read & Write)</label>
-<input id="ghTok" type="password" placeholder="github_pat_xxx">
-<div class="grid2">
-<div><label>Owner</label><input id="ghOwn" placeholder="asif3543"></div>
-<div><label>Repo</label><input id="ghRepo" placeholder="hindi-subbed-anime"></div>
-</div>
-<div class="grid2">
-<div><label>Branch</label><input id="ghBr" value="main"></div>
-<div><label>Admin PIN (VIP decrypt ke liye)</label><input id="adPin" type="password" placeholder="Strong PIN"></div>
-</div>
-<button class="go" id="btnLoad" onclick="loadFromGithub()">🔗 GitHub se data.json Load</button>
-<p id="status" style="color:var(--mu);font-size:11px;margin-top:8px">Not loaded</p>
-</div>
-
-<div class="tabs">
-<button data-t="post" class="btn on" onclick="tab('post')">Add Post</button>
-<button data-t="ep" class="btn" onclick="tab('ep')">Episodes</button>
-<button data-t="del" class="btn" onclick="tab('del')">Delete</button>
-<button data-t="sh" class="btn" onclick="tab('sh')">Shorteners</button>
-<button data-t="vip" class="btn" onclick="tab('vip')">VIP</button>
-<button data-t="dk" class="btn" onclick="tab('dk')">Decrypt Keys</button>
-<button data-t="ads" class="btn" onclick="tab('ads')">Ads & App</button>
-<button data-t="set" class="btn" onclick="tab('set')">Settings</button>
-<button data-t="push" class="btn" onclick="tab('push')">Push</button>
+<!-- LOGIN SECTION -->
+<div id="loginSection" style="background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:20px;margin-top:20px;">
+  <p style="color:var(--mu);font-size:12px;text-align:center">GitHub Token hi aapka password hai.</p>
+  <label>GitHub Token (PAT)</label>
+  <input id="ghTok" type="password" placeholder="github_pat_xxx...">
+  <div class="grid2">
+    <div><label>GitHub Username</label><input id="ghOwn" placeholder="e.g. asif3543"></div>
+    <div><label>Repo Name</label><input id="ghRepo" placeholder="e.g. hindi-subbed-anime"></div>
+  </div>
+  <label>Admin PIN (VIP aur Links Decrypt karne ke liye)</label>
+  <input id="adPin" type="password" placeholder="Create a strong PIN">
+  
+  <button class="go" id="btnLoad" onclick="loadFromGithub()">🔓 Login & Load Data</button>
 </div>
 
-<div class="p on" id="t-post">
-<h2>Post Add (SEO + Auto Delete + CDN.jpg)</h2>
-<label>Poster Image URL https://</label><input id="pImg" placeholder="https://...">
-<label>Name *</label><input id="pName" placeholder="Mechanical Marie Hindi Subbed">
-<label>Category *</label><input id="pCat" placeholder="Romance">
-<label>Genres comma</label><input id="pGen" placeholder="Romance, Comedy">
-<label>Year / Release</label><input id="pYr" placeholder="2025">
-<label>Search Keywords (SEO)</label><input id="pKeys" placeholder="mechanical marie hindi subbed kikai...">
-<label>Auto Delete Expiry (khali = never)</label><input id="pExp" type="date">
-<label>Story</label><textarea id="pSt"></textarea>
-<button class="go" onclick="addPost()">+ Post Memory Me Add</button>
-<div id="plist"></div>
-</div>
+<!-- MAIN ADMIN AREA (Hidden until logged in) -->
+<div id="appBody">
+  <div class="tabs">
+    <button data-t="post" class="btn on" onclick="tab('post')">Add Post</button>
+    <button data-t="ep" class="btn" onclick="tab('ep')">Episodes</button>
+    <button data-t="del" class="btn" onclick="tab('del')">Delete</button>
+    <button data-t="sh" class="btn" onclick="tab('sh')">Shorteners</button>
+    <button data-t="vip" class="btn" onclick="tab('vip')">VIP</button>
+    <button data-t="ads" class="btn" onclick="tab('ads')">Ads & App</button>
+    <button data-t="set" class="btn" onclick="tab('set')">Settings</button>
+    <button data-t="push" class="btn" onclick="tab('push')" style="background:var(--ok);color:#111">🚀 Push</button>
+  </div>
 
-<div class="p" id="t-ep">
-<h2>Episode Add (D1 Migration jaisa)</h2>
-<input id="eSearch" placeholder="Search post..." oninput="renderEpSel()" style="margin-bottom:6px">
-<select id="eP"></select>
-<div class="grid2">
-<div><label>Season</label><input id="eS" value="01"></div>
-<div><label>Episode Label *</label><input id="eN" placeholder="01"></div>
-</div>
-<label>Quality</label><select id="eQl"><option>FHD</option><option selected>HD</option><option>SD</option></select>
-<label>Play Link (optional)</label><input id="ePl" placeholder="https://...">
-<label>Play Password (lock)</label><input id="ePw" placeholder="khali = no lock">
-<label>Real Download Link * (public nahi jayega, pd encrypted banega)</label><input id="eDl" placeholder="https://drive.google.com/...">
-<button class="go" id="btnEp" onclick="addEpisode()">+ Episode Add + Short Auto</button>
-</div>
+  <div class="p on" id="t-post">
+    <h2>Post Add</h2>
+    <label>Poster Image URL</label><input id="pImg" placeholder="https://...">
+    <label>Anime Name *</label><input id="pName" placeholder="Solo Leveling Hindi Sub">
+    <label>Category *</label><input id="pCat" placeholder="Action">
+    <label>Genres (comma separated)</label><input id="pGen" placeholder="Action, Fantasy">
+    <label>Release Year</label><input id="pYr" placeholder="2024">
+    <label>Story</label><textarea id="pSt"></textarea>
+    <button class="go" onclick="addPost()">+ Add Post</button>
+    <div id="plist"></div>
+  </div>
 
-<div class="p" id="t-del">
-<h2>Delete</h2>
-<div id="dlist"></div>
-</div>
+  <div class="p" id="t-ep">
+    <h2>Add Episode</h2>
+    <input id="eSearch" placeholder="Search post..." oninput="renderEpSel()" style="margin-bottom:6px">
+    <select id="eP"></select>
+    <div class="grid2">
+      <div><label>Season</label><input id="eS" value="01"></div>
+      <div><label>Episode No *</label><input id="eN" placeholder="01"></div>
+    </div>
+    <label>Quality</label><select id="eQl"><option>FHD</option><option selected>HD</option><option>SD</option></select>
+    <label>Play Link (Optional)</label><input id="ePl" placeholder="https://...">
+    <label>Play Password (Optional)</label><input id="ePw" placeholder="Leave blank if no lock">
+    <label>Real Download Link (Google Drive etc.) *</label><input id="eDl" placeholder="https://...">
+    <button class="go" id="btnEp" onclick="addEpisode()">+ Add Episode (Auto Shortener)</button>
+  </div>
 
-<div class="p" id="t-sh">
-<h2>Shorteners - Max 3 (Session only)</h2>
-<div class="grid2">
-<div><label>Domain</label><input id="sD" placeholder="gplinks.com"></div>
-<div><label>API Key</label><input id="sK"></div>
-</div>
-<button class="go" onclick="addSh()">+ Add Shortener</button>
-<div id="slist"></div>
-</div>
+  <div class="p" id="t-del">
+    <h2>Delete Posts</h2>
+    <div id="dlist"></div>
+  </div>
 
-<div class="p" id="t-vip">
-<h2>VIP Pass</h2>
-<div class="grid2">
-<div><label>Gmail *</label><input id="vE" placeholder="user@gmail.com"></div>
-<div><label>Passcode *</label><input id="vP"></div>
-</div>
-<label>Duration</label><select id="vD"><option value="30">30 din</option><option value="90">90 din</option><option value="365">1 saal</option></select>
-<button class="go" onclick="addVip()">+ VIP Add</button>
-<div id="vlist"></div>
-</div>
+  <div class="p" id="t-sh">
+    <h2>Shorteners</h2>
+    <div class="grid2">
+      <div><label>Domain</label><input id="sD" placeholder="gplinks.com"></div>
+      <div><label>API Key</label><input id="sK"></div>
+    </div>
+    <button class="go" onclick="addSh()">+ Add Shortener</button>
+    <div id="slist"></div>
+  </div>
 
-<div class="p" id="t-dk">
-<h2>Decrypt Keys (Paid Play Links)</h2>
-<div class="grid2">
-<div><label>Password</label><input id="dkPass"></div>
-<div><label>Original Link</label><input id="dkLink" placeholder="https://..."></div>
-</div>
-<button class="go" onclick="addDk()">+ Add Decrypt Key</button>
-<div id="dklist"></div>
-</div>
+  <div class="p" id="t-vip">
+    <h2>Create VIP Pass</h2>
+    <div class="grid2">
+      <div><label>User Gmail *</label><input id="vE" placeholder="user@gmail.com"></div>
+      <div><label>Passcode *</label><input id="vP"></div>
+    </div>
+    <label>Duration</label><select id="vD"><option value="30">30 Days</option><option value="90">90 Days</option><option value="365">1 Year</option></select>
+    <button class="go" onclick="addVip()">+ Add VIP User</button>
+    <div id="vlist"></div>
+  </div>
 
-<div class="p" id="t-ads">
-<h2>Ads & App Link (Pop-up ads)</h2>
-<label>Header Ad Code</label><textarea id="c_head"></textarea>
-<label>Body Ad Code (Popunder)</label><textarea id="c_body"></textarea>
-<label>Banner Ad Code</label><textarea id="c_ban"></textarea>
-<label>APK Link</label><input id="c_apk" placeholder="https://...">
-</div>
+  <div class="p" id="t-ads">
+    <h2>Ads & APK Link</h2>
+    <label>Header Ad Code</label><textarea id="c_head"></textarea>
+    <label>Body Ad (Popunder)</label><textarea id="c_body"></textarea>
+    <label>Banner Ad (iframe)</label><textarea id="c_ban"></textarea>
+    <label>App APK Link</label><input id="c_apk" placeholder="https://...">
+  </div>
 
-<div class="p" id="t-set">
-<h2>Settings (Telegram post hata diya)</h2>
-<label>Telegram Channel Link (display)</label><input id="c_tg" placeholder="https://t.me/...">
-<label>Group Link</label><input id="c_gr">
-<label>Website Link</label><input id="c_web">
-<label>Instagram</label><input id="c_ig">
-<label>YouTube</label><input id="c_yt">
-<label>Site Name</label><input id="c_site" value="Hindi Subbed Anime">
-</div>
+  <div class="p" id="t-set">
+    <h2>Site Settings</h2>
+    <label>Telegram Channel Link</label><input id="c_tg" placeholder="https://t.me/...">
+    <label>Telegram Group</label><input id="c_gr">
+    <label>Website URL</label><input id="c_web">
+    <label>Site Name</label><input id="c_site" value="Hindi Subbed Anime">
+  </div>
 
-<div class="p" id="t-push">
-<h2>Push to GitHub - data/data.json</h2>
-<p id="pushInfo" style="color:var(--mu);font-size:11px">Load -> Add -> Push</p>
-<button class="go2" id="btnPush" onclick="pushToGithub()">🚀 Push Karo</button>
+  <div class="p" id="t-push">
+    <h2>Save Changes to Live Site</h2>
+    <p style="color:var(--mu);font-size:12px">Jab aap posts add kar lein, toh yahan se PUSH dabayein taaki site live update ho jaye.</p>
+    <button class="go2" id="btnPush" onclick="pushToGithub()">🚀 Push to GitHub (Save Data)</button>
+  </div>
+
 </div>
 
 <div id="log"></div>
@@ -151,55 +140,103 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let db={posts:[],vip:[],cfg:{},sh:[],paid:[]}, sha=null, vkCache=null;
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
-async function getVk(){ const pin=$('adPin').value.trim(); if(!pin) throw new Error('PIN daalo'); if(vkCache) return vkCache; vkCache=await H(pin+'_ASI_VK_2024_SALT'); return vkCache; }
+async function getVk(){ const pin=$('adPin').value.trim(); if(!pin) throw new Error('PIN required'); if(vkCache) return vkCache; vkCache=await H(pin+'_ASI_VK_2024_SALT'); return vkCache; }
 async function enc(t,p){ const e=new TextEncoder(); const s=crypto.getRandomValues(new Uint8Array(16)); const iv=crypto.getRandomValues(new Uint8Array(12)); const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:100000,hash:'SHA-256'},await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt']); const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,e.encode(t))); const all=new Uint8Array(s.length+iv.length+ct.length); all.set(s,0); all.set(iv,s.length); all.set(ct,s.length+iv.length); return btoa(String.fromCharCode(...all)); }
-function log(t,ok=true){ const el=$('log'); el.textContent=t; el.style.display='block'; el.style.borderColor=ok?'#22c55e':'#ef4444'; setTimeout(()=>el.style.display='none',6000); }
+function log(t,ok=true){ const el=$('log'); el.textContent=t; el.style.display='block'; el.style.borderColor=ok?'#22c55e':'#ef4444'; setTimeout(()=>el.style.display='none',4000); }
 function tab(t){ document.querySelectorAll('.p').forEach(e=>e.classList.toggle('on',e.id==='t-'+t)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); }
+
+// Load Data
 async function loadFromGithub(){
-  const tok=$('ghTok').value.trim(), own=$('ghOwn').value.trim(), repo=$('ghRepo').value.trim(), br=$('ghBr').value.trim()||'main';
-  if(!tok||!own||!repo) return log('Token Owner Repo bharo',false);
-  $('btnLoad').disabled=true; $('status').textContent='Loading...';
+  const tok=$('ghTok').value.trim(), own=$('ghOwn').value.trim(), repo=$('ghRepo').value.trim(), pin=$('adPin').value.trim();
+  if(!tok||!own||!repo||!pin) return log('Saari details aur PIN daaliye',false);
+  $('btnLoad').disabled=true; $('btnLoad').textContent='Verifying...';
   try{
-    const r=await fetch(`https://api.github.com/repos/${own}/${repo}/contents/data/data.json?ref=${br}`,{headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'}});
-    if(r.status===404){ db={posts:[],vip:[],cfg:{},sh:[],paid:[]}; sha=null; $('status').textContent='data/data.json nahi mila, naya banega'; log('Fresh start'); }
-    else{ if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.sha; const raw=atob(j.content.replace(/\n/g,'')); const content=JSON.parse(decodeURIComponent(escape(raw))); db.posts=content.posts||[]; db.vip=content.vip||[]; db.cfg=content.cfg||{}; db.paid=content.paid||[]; ['head','body','ban','apk','tg','gr','web','ig','yt','site'].forEach(k=>{ if($('c_'+k)) $('c_'+k).value=db.cfg[k]||''; }); $('status').textContent=`Loaded ${db.posts.length} posts`; log('Loaded'); }
-  }catch(e){ log('Fail: '+e.message,false); } $('btnLoad').disabled=false; renderAll();
+    const r=await fetch(`https://api.github.com/repos/${own}/${repo}/contents/data/data.json`,{headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'}});
+    if(r.status===404){ db={posts:[],vip:[],cfg:{},sh:[],paid:[]}; sha=null; log('Fresh start. Ready!'); }
+    else{ 
+      if(!r.ok) throw new Error("Invalid GitHub Token ya Repo Name"); 
+      const j=await r.json(); sha=j.sha; 
+      const raw=atob(j.content.replace(/\n/g,'')); const content=JSON.parse(decodeURIComponent(escape(raw))); 
+      db.posts=content.posts||[]; db.vip=content.vip||[]; db.cfg=content.cfg||{}; db.sh=content.sh||[];
+      ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ if($('c_'+k)) $('c_'+k).value=db.cfg[k]||''; }); 
+      log(`Login Success! ${db.posts.length} posts loaded`); 
+    }
+    // Show Dashboard
+    $('loginSection').style.display='none';
+    $('appBody').style.display='block';
+    renderAll();
+  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Login & Load Data'; } 
+  $('btnLoad').disabled=false; 
 }
-function renderAll(){ $('plist').innerHTML=db.posts.map(p=>`<div class="row"><div><b>${esc(p.name)}</b><br><small>${esc(p.cat)} • ${p.eps.length} eps</small></div></div>`).join(''); renderEpSel(); }
-function renderEpSel(){ const q=$('eSearch')?$('eSearch').value.toLowerCase():''; const filtered=db.posts.filter(p=>p.name.toLowerCase().includes(q)); $('eP').innerHTML=filtered.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(''); }
-function addSh(){ const d=$('sD').value.trim().replace(/^https?:\/\//,'').replace(/\/.*/,''); const k=$('sK').value.trim(); if(!d||!k) return log('Domain+Key',false); if(db.sh.length>=3) return log('Max 3',false); db.sh.push({d,k}); $('sD').value=$('sK').value=''; log('Added'); }
+
+function renderAll(){ 
+  $('plist').innerHTML=db.posts.map(p=>`<div class="row"><div><b>${esc(p.name)}</b><br><small>${p.eps.length} eps</small></div></div>`).join(''); 
+  renderEpSel(); 
+  $('dlist').innerHTML=db.posts.map((p,i)=>`<div class="row"><div>${esc(p.name)}</div><button class="danger" onclick="delPost(${i})">Delete</button></div>`).join('');
+  $('slist').innerHTML=db.sh.map((s,i)=>`<div class="row"><div>${esc(s.d)}</div><button class="danger" onclick="db.sh.splice(${i},1);renderAll()">Del</button></div>`).join('');
+}
+function renderEpSel(){ const q=$('eSearch').value.toLowerCase(); const filtered=db.posts.filter(p=>p.name.toLowerCase().includes(q)); $('eP').innerHTML=filtered.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(''); }
+
+function delPost(i){ if(confirm('Delete?')){ db.posts.splice(i,1); renderAll(); log('Deleted'); } }
+function addSh(){ const d=$('sD').value.trim().replace(/^https?:\/\//,'').replace(/\/.*/,''); const k=$('sK').value.trim(); if(!d||!k) return; db.sh.push({d,k}); $('sD').value=$('sK').value=''; renderAll(); log('Added'); }
+
 function addPost(){
   const name=$('pName').value.trim(); if(!name) return log('Name required',false);
-  const exp=$('pExp').value? new Date($('pExp').value).getTime() : 0;
-  db.posts.unshift({id:Date.now().toString(36),img:$('pImg').value.trim(),name,cat:$('pCat').value.trim(),gen:$('pGen').value.split(',').map(s=>s.trim()).filter(Boolean),yr:$('pYr').value.trim(),keywords:$('pKeys').value.trim(),expiry:exp,story:$('pSt').value.trim(),updated:Date.now(),eps:[]});
-  log('Post added'); renderAll();
+  db.posts.unshift({id:Date.now().toString(36),img:$('pImg').value.trim(),name,cat:$('pCat').value.trim(),gen:$('pGen').value.split(',').map(s=>s.trim()).filter(Boolean),yr:$('pYr').value.trim(),story:$('pSt').value.trim(),updated:Date.now(),eps:[]});
+  $('pName').value=''; log('Post added'); renderAll();
 }
+
+// FIX: Shortener URL Generation logic
 async function addEpisode(){
   const post=db.posts.find(x=>x.id===$('eP').value); if(!post) return log('Post select karo',false);
   const real=$('eDl').value.trim(); if(!real) return log('Real DL daalo',false);
   if(!db.sh.length) return log('Shortener add karo pehle',false);
-  const vk=await getVk();
+  
+  $('btnEp').textContent = 'Generating Links...';
+  
+  const epId = Date.now().toString(36);
+  const baseUrl = window.location.href.split('/').slice(0,-1).join('/');
+  // VERY IMPORTANT FIX: Target URL with id, ep, and done=1
+  const targetUrl = `${baseUrl}/verify.html?id=${post.id}&ep=${epId}&done=1`;
+  
   const shorts=[];
-  for(const s of db.sh){ try{ const r=await fetch(`https://${s.d}/api?api=${encodeURIComponent(s.k)}&url=${encodeURIComponent('https://'+location.host+'/verify.html?ep='+Date.now())}`); const j=await r.json(); const l=j.shortenedUrl||j.short_url; if(l) shorts.push(l); }catch(e){} }
+  for(const s of db.sh){ 
+    try{ 
+      const r=await fetch(`https://${s.d}/api?api=${encodeURIComponent(s.k)}&url=${encodeURIComponent(targetUrl)}`); 
+      const j=await r.json(); const l=j.shortenedUrl||j.short_url; 
+      if(l) shorts.push(l); 
+    }catch(e){} 
+  }
+  
+  if(!shorts.length) { $('btnEp').textContent = '+ Add Episode'; return log('Shortener API fail',false); }
+
+  const vk=await getVk();
   const pd=await enc(real, await H('Hindi Subbed Anime_VK_BULLETPROOF_2024'));
   let play=$('ePl').value.trim(), lock=0; if(play && $('ePw').value.trim()){ play=await enc(play, $('ePw').value.trim()); lock=1; }
-  post.eps.push({id:Date.now().toString(36),s:$('eS').value.trim()||'01',n:$('eN').value.trim(),q:$('eQl').value,play,lock,pd,short:shorts.length?shorts:['https://gplinks.com/demo']});
-  log('Episode added'); $('eN').value=$('eDl').value='';
+  
+  post.eps.push({id:epId, s:$('eS').value.trim()||'01', n:$('eN').value.trim(), q:$('eQl').value, play, lock, pd, short:shorts});
+  $('eN').value=$('eDl').value=''; $('btnEp').textContent = '+ Add Episode';
+  log('Episode Added Successfully!');
 }
-async function addVip(){ const email=$('vE').value.trim().toLowerCase(), pass=$('vP').value.trim(); if(!email||!pass) return log('Gmail+Passcode',false); const vk=await getVk(); const k=await enc(vk, pass); const h=await H(pass); db.vip.push({email,h,k,exp:Date.now()+parseInt($('vD').value)*86400000}); log('VIP added'); }
-function addDk(){ const p=$('dkPass').value.trim(), l=$('dkLink').value.trim(); if(!p||!l) return log('Pass+Link',false); db.paid.push({password:p,original_link:l}); log('Decrypt key added'); }
+
+async function addVip(){ const email=$('vE').value.trim().toLowerCase(), pass=$('vP').value.trim(); if(!email||!pass) return; const vk=await getVk(); const k=await enc(vk, pass); const h=await H(pass); db.vip.push({email,h,k,exp:Date.now()+parseInt($('vD').value)*86400000}); log('VIP added'); }
+
 async function pushToGithub(){
-  const tok=$('ghTok').value.trim(), own=$('ghOwn').value.trim(), repo=$('ghRepo').value.trim(), br=$('ghBr').value.trim()||'main';
-  if(!tok||!own||!repo) return log('GitHub details bharo',false);
-  ['head','body','ban','apk','tg','gr','web','ig','yt','site'].forEach(k=>{ const el=$('c_'+k); if(el) db.cfg[k]=el.value.trim(); });
-  $('btnPush').disabled=true; log('Pushing...',true);
+  const tok=$('ghTok').value.trim(), own=$('ghOwn').value.trim(), repo=$('ghRepo').value.trim();
+  ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ const el=$('c_'+k); if(el) db.cfg[k]=el.value.trim(); });
+  db.cfg.sh = db.sh; // Save shorteners in config
+  
+  $('btnPush').disabled=true; $('btnPush').textContent='Pushing...';
   try{
-    const pub={posts:db.posts.map(p=>{ const {eps,...rest}=p; return {...rest, eps: eps.map(({dl,...e})=>e)}; }), vip:db.vip, cfg:db.cfg, paid:db.paid};
+    const pub={posts:db.posts.map(p=>{ const {eps,...rest}=p; return {...rest, eps: eps.map(({dl,...e})=>e)}; }), vip:db.vip, cfg:db.cfg, sh:db.sh};
     const jsonStr=JSON.stringify(pub,null,2);
     const content=btoa(unescape(encodeURIComponent(jsonStr)));
-    const body={message:`update ${new Date().toISOString()}`,content,branch:br}; if(sha) body.sha=sha;
+    const body={message:`Site Update ${new Date().toISOString()}`,content}; if(sha) body.sha=sha;
+    
     const r=await fetch(`https://api.github.com/repos/${own}/${repo}/contents/data/data.json`,{method:'PUT',headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.content.sha; log(`Pushed SHA ${sha.slice(0,7)}`,true);
-  }catch(e){ log('Push fail: '+e.message,false); } $('btnPush').disabled=false;
+    if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.content.sha; 
+    log(`✅ Pushed to Live Site Successfully!`,true);
+  }catch(e){ log('Push fail: '+e.message,false); } 
+  $('btnPush').disabled=false; $('btnPush').textContent='🚀 Push to GitHub (Save Data)';
 }
 </script></body></html>

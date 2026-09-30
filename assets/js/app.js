@@ -1,14 +1,22 @@
-// Hindi Subbed Anime - Core JS - GitHub Only, No Save on Mobile
+// Hindi Subbed Anime - Core JS - Fixed & Optimized
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const kk = s => String(s||'').trim().toLowerCase();
-const gens = p => (p.gen||[]).flatMap(g=>String(g).split(/[,.;\/|]+/)).map(s=>s.trim()).filter(Boolean);
+
+// Auto Genre Detection: Handles "#Action #Adventure", "Action, Adventure", and "Action Adventure" automatically.
+const gens = p => {
+  let raw = (p.gen||[]).join(',');
+  raw = raw.replace(/#/g, ','); // Hashtag to comma
+  if(!raw.includes(',') && raw.includes(' ')) raw = raw.replace(/\s+/g, ','); // Space to comma if no comma exist
+  return raw.split(/[,.;\/|]+/).map(s=>s.trim()).filter(Boolean);
+};
+
 const isUrl = u => /^https?:\/\//i.test(u);
 
 // SHA-256 hash for VIP / verify
 const H = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
 
-// AES-GCM Encrypt / Decrypt - for VIP direct links (pd)
+// AES-GCM Encrypt / Decrypt
 async function enc(t,p){
   const e=new TextEncoder();
   const s=crypto.getRandomValues(new Uint8Array(16));
@@ -27,7 +35,6 @@ async function dec(b,p){
   }catch(e){ return null; }
 }
 
-// Inject ads safely (head/body/ban from data.json)
 function inj(h,el){
   if(!h) return;
   const t=document.createElement('template'); t.innerHTML=h;
@@ -37,15 +44,12 @@ function inj(h,el){
   el.append(t.content);
 }
 
-// CDN images with.jpg extension - Security & Image.jpg feature from Cloudflare file
 function cdnImg(u){
   if(!u) return 'https://placehold.co/600x338/232326/9f9fa9?text=No+Image';
   if(u.includes('wsrv.nl')) return u;
-  // force jpg for CDN protection
   return `https://wsrv.nl/?url=${encodeURIComponent(u)}&output=jpg&q=80`;
 }
 
-// Load data.json from GitHub - data folder me
 let CFG={};
 async function load(){
   try{
@@ -56,7 +60,6 @@ async function load(){
     if(CFG.head) inj(CFG.head, document.head);
     if(CFG.body) inj(CFG.body, document.body);
     const ban=$('ban'); if(ban && CFG.ban) inj(CFG.ban, ban);
-    // auto delete - filter expired posts
     const now=Date.now();
     if(d.posts) d.posts=d.posts.filter(p=>!p.expiry || p.expiry>now);
     return d;
@@ -66,12 +69,16 @@ async function load(){
   }
 }
 
-// Anti-bypass helpers
+// Security: LocalStorage taaki New Tab shortener issue na aaye
 function setPending(epId){
-  sessionStorage.setItem('pending_ep', epId);
-  sessionStorage.setItem('pending_time', Date.now().toString());
+  localStorage.setItem('pending_ep', epId);
+  localStorage.setItem('pending_time', Date.now().toString());
 }
 function isHumanVerified(){
-  // simple check - hold button sets flag
-  return sessionStorage.getItem('human_verified')==='1';
+  return localStorage.getItem('human_verified')==='1';
+}
+
+// PWA Support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }

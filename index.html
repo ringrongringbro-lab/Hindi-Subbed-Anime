@@ -8,7 +8,6 @@
 <meta name="theme-color" content="#ff8c00">
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
-/* 3-DOTS MENU CSS */
 .site-menu { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; backdrop-filter: blur(4px); }
 .site-menu.show { display: flex; animation: slideUp 0.3s ease-out; }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -52,7 +51,9 @@
 <header>
   <a href="index.html" class="logo">Hindi <span>Subbed</span></a>
   <div class="search"><i>🔍</i><input id="q" placeholder="Search anime..."></div>
-  <!-- YE RAHA 3 DOTS WALA BUTTON -->
+  <!-- Telegram Header Icon -->
+  <a id="tgBtn" href="#" target="_blank" style="display:none; text-decoration:none; margin-left:8px; font-size:20px;">✈️</a>
+  <!-- 3 DOTS MENU -->
   <button onclick="toggleMenu()" style="background:transparent;border:0;color:var(--tx);font-size:24px;cursor:pointer;padding:0 5px;margin-left:5px;">⋮</button>
 </header>
 
@@ -72,10 +73,6 @@
 <script>
 const N=8;
 let S={q:'',c:'',g:'',a:'',p:0}, ALL=[];
-const $=id=>document.getElementById(id);
-const kk=s=>String(s||'').trim().toLowerCase();
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const gens=p=>(p.gen||[]).flatMap(g=>String(g).split(/[,.;\/|]+/)).map(s=>s.trim()).filter(Boolean);
 
 function toggleMenu() {
   const m = $('siteMenu');
@@ -83,7 +80,6 @@ function toggleMenu() {
   else m.classList.add('show');
 }
 
-// Function for Homepage horizontal scroll
 function row(id,k,map){
   const r=$(id); r.innerHTML='';
   [...map].sort((a,b)=>a[1].localeCompare(b[1])).forEach(([val,label])=>{
@@ -94,7 +90,6 @@ function row(id,k,map){
   });
 }
 
-// Function for 3-Dots Menu inside Overlay
 function menuRow(id,k,map){
   const r=$(id); r.innerHTML='';
   [...map].sort((a,b)=>a[1].localeCompare(b[1])).forEach(([val,label])=>{
@@ -113,10 +108,7 @@ function draw(){
     const a=(p.name[0]||'#').toUpperCase(); am.set(a,a);
   });
   
-  // Fill top horizontal row (Only Categories for clean look)
   row('cats','c',cm); 
-  
-  // Fill 3-Dots Menu (Categories, Genres, A-Z)
   menuRow('menuCats','c',cm);
   menuRow('menuGens','g',gm);
   menuRow('menuAZ','a',am);
@@ -131,7 +123,7 @@ function draw(){
   const slice=f.slice(S.p*N, S.p*N+N);
 
   $('grid').innerHTML=slice.map(p=>{
-    const genre=(p.gen&&p.gen[0])?p.gen[0]: (p.cat||'Anime');
+    const genre=(p.gen&&p.gen[0])?p.gen[0].replace(/#/g,''): (p.cat||'Anime');
     return `<a class="card" href="post.html?id=${encodeURIComponent(p.id)}">
       <div class="thumb">
         <img loading="lazy" src="${esc(cdnImg(p.img))}" alt="${esc(p.name)}">
@@ -152,18 +144,27 @@ function draw(){
 
 async function loadData(){
   try{
-    const r=await fetch('data/data.json?'+Date.now(),{cache:'no-store'});
-    if(!r.ok) throw new Error();
-    const d=await r.json();
-    ALL=d.posts||[];
-    if(d.cfg && d.cfg.ban && $('ban')){ const t=document.createElement('template'); t.innerHTML=d.cfg.ban; $('ban').append(t.content); }
+    const d = await load(); // Global app.js function (Ads will run)
+    ALL = d.posts || [];
+    
+    // Telegram Button Show if Exist
+    if(CFG.tg) {
+       const tg = $('tgBtn');
+       if(tg) { tg.href = CFG.tg; tg.style.display = 'inline-block'; }
+    }
+    
     draw();
   }catch(e){ $('grid').innerHTML='<p class="mu">Data loading failed...</p>'; }
 }
 
 const inp=$('q');
 const u=new URLSearchParams(location.search);
+// URL Parameter Fix
 if(u.get('q')){ S.q=kk(u.get('q')); inp.value=u.get('q'); }
+if(u.get('c')) S.c=kk(u.get('c'));
+if(u.get('g')) S.g=kk(u.get('g'));
+if(u.get('a')) S.a=u.get('a').toUpperCase();
+
 inp.oninput=()=>{ S.q=kk(inp.value); S.p=0; draw(); };
 loadData();
 </script>

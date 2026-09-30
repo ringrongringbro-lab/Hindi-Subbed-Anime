@@ -1,11 +1,10 @@
-// verify.js - Advanced Anti-Bypass (2-Step Verification)
 let EP=null, POST=null, SHORTS=[];
 
 async function init(){
   const params = new URLSearchParams(location.search);
   const postId = params.get('id');
   const epId = params.get('ep');
-  const isDone = params.get('done') === '1'; // Shortener return check
+  const isDone = params.get('done') === '1'; 
   const $ = id=>document.getElementById(id);
 
   if(!postId||!epId){
@@ -13,10 +12,10 @@ async function init(){
     return;
   }
 
-  // Anti-bypass Step 1: Check session referrer (agar first time hai)
+  // Security: Changed from SessionStorage to LocalStorage 
   if(!isDone) {
-      const pending=sessionStorage.getItem('pending_ep');
-      const ptime=parseInt(sessionStorage.getItem('pending_time')||'0');
+      const pending=localStorage.getItem('pending_ep');
+      const ptime=parseInt(localStorage.getItem('pending_time')||'0');
       const ref=document.referrer||'';
       const allowedRef = ref.includes(location.hostname) || (pending===epId && (Date.now()-ptime)<15*60*1000);
 
@@ -26,7 +25,6 @@ async function init(){
       }
   }
 
-  // Load data.json
   let data;
   try{
     const r=await fetch('data/data.json?'+Date.now(),{cache:'no-store'});
@@ -39,22 +37,18 @@ async function init(){
   const ep=post ? (post.eps||[]).find(e=>e.id===epId) : null;
   
   if(!ep){ $('msg').textContent='Episode not found'; return; }
-
   POST=post; EP=ep; SHORTS=ep.short||[];
 
   if (isDone) {
-      // 🟢 STEP 2: USER RETURNED FROM SHORTENER
-      if(sessionStorage.getItem('human_verified') !== '1') {
-          // Bypass attempt pakda gaya
+      // Return checking via LocalStorage
+      if(localStorage.getItem('human_verified') !== '1') {
           $('msg').innerHTML = '<span style="color:#ef4444">⚠️ Verification Bypass Detected!</span><br>Please do not skip ads.<br><a href="index.html">Go Home</a>';
           return;
       }
-      
       $('title').textContent = `Download: ${post.name}`;
       $('msg').innerHTML = '<span style="color:#22c55e">✅ Shortener Solved!</span>';
       showRealLink();
   } else {
-      // 🟠 STEP 1: FIRST TIME VISIT (Show Hold Button)
       $('title').textContent=`Verify: ${post.name} S${ep.s} E${ep.n}`;
       $('msg').textContent='Bot check required to generate link.';
       $('human').style.display='block';
@@ -82,14 +76,14 @@ function setupHold(){
   btn.addEventListener('touchstart', start,{passive:false}); btn.addEventListener('touchend', end);
 }
 
-// WHEN 3 SECONDS HOLD FINISHED (SHOW ONLY SHORTENER LINK)
 async function success(){
   const $=id=>document.getElementById(id);
   $('human').style.display='none';
   const after=$('after');
   after.style.display='block';
 
-  sessionStorage.setItem('human_verified','1'); // Save flag for step 2
+  // SET to LocalStorage so shortener new tabs won't break it
+  localStorage.setItem('human_verified','1'); 
 
   if(SHORTS.length){
     const rot=parseInt(localStorage.getItem('rot')||'0');
@@ -106,11 +100,9 @@ async function success(){
   }
 }
 
-// SHOW REAL LINK DECRYPTED
 async function showRealLink() {
     const after = document.getElementById('after');
     after.style.display = 'block';
-    
     try {
       const vk = await getGlobalVk();
       const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -124,9 +116,8 @@ async function showRealLink() {
             <a href="${esc(real)}" target="_blank" class="pill" style="display:inline-block;background:#22c55e;color:#111;padding:12px 20px;font-size:15px;font-weight:900;width:100%;text-align:center;">Click Here To Download</a>
           </div>
         `;
-        // Security clean up
-        sessionStorage.removeItem('human_verified');
-        sessionStorage.removeItem('pending_ep');
+        localStorage.removeItem('human_verified');
+        localStorage.removeItem('pending_ep');
       } else {
         after.innerHTML = '<p style="color:#ef4444">Decryption failed. Please contact admin.</p>';
       }

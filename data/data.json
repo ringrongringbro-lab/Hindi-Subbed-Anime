@@ -17,7 +17,20 @@
       "yr": "2026",
       "story": "Ik number anime",
       "updated": 1790701721064,
-      "eps": []
+      "eps": [
+        {
+          "id": "muo30ynb",
+          "s": "02",
+          "n": "01",
+          "q": "HD",
+          "play": "",
+          "lock": 0,
+          "pd": "4WyIsTzzWdqR3E+PjbJy6ljJkoICYH4HqhOgXDGilNi+JIw37cAvHEEJFGfjAVUrPUr+m84VgtCqqoqS8w4lOmy+nyesEZDDOBMRV9RZDIuWAP2C12Jq0GmzQj2yH+qQGEtRWWQpahgjxBIaNUyqHh1jIH4b9UY7H78=",
+          "short": [
+            "https://gplinks.co/PtRVePIW"
+          ]
+        }
+      ]
     },
     {
       "id": "mech-marie-2025",
@@ -83,6 +96,10 @@
       {
         "d": "shrtfly.com",
         "k": "1ea55c6020a2cba2b2e8bc545ab93ca2"
+      },
+      {
+        "d": "gplinks.com",
+        "k": "df1dda439a2bf7d2cc04ad2c6a555515d451e417"
       }
     ]
   },
@@ -90,6 +107,10 @@
     {
       "d": "shrtfly.com",
       "k": "1ea55c6020a2cba2b2e8bc545ab93ca2"
+    },
+    {
+      "d": "gplinks.com",
+      "k": "df1dda439a2bf7d2cc04ad2c6a555515d451e417"
     }
   ]
 }

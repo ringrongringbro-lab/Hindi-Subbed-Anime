@@ -5,13 +5,12 @@ const kk = s => String(s||'').trim().toLowerCase();
 
 const gens = p => {
   let raw = (p.gen||[]).join(',');
-  raw = raw.replace(/#/g, ','); 
-  if(!raw.includes(',') && raw.includes(' ')) raw = raw.replace(/\s+/g, ','); 
+  raw = raw.replace(/#/g, ',');
+  if(!raw.includes(',') && raw.includes(' ')) raw = raw.replace(/\s+/g, ',');
   return raw.split(/[,.;\/|]+/).map(s=>s.trim()).filter(Boolean);
 };
 
 const isUrl = u => /^https?:\/\//i.test(u);
-
 const H = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
 
 async function enc(t,p){
@@ -41,10 +40,9 @@ function inj(h,el){
   el.append(t.content);
 }
 
-// Fixed: Proxy removed for instant image loading
 function cdnImg(u){
   if(!u) return 'https://placehold.co/600x338/0d121c/00ff66?text=No+Image';
-  return u; 
+  return u;
 }
 
 let CFG={};

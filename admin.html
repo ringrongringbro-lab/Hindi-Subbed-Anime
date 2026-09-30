@@ -22,7 +22,7 @@ textarea.form-control { min-height: 70px; }
 .ep-btn.on { background: var(--ac); color: #000; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px; border: 1px solid var(--ln); background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 8px; }
-.p { display: none; } .p.on { display: block; }
+.p { display: none; }.p.on { display: block; }
 #log { position: fixed; left: 12px; right: 12px; bottom: 12px; background: #111e16; color: #fff; padding: 12px; border-radius: 12px; border: 1px solid var(--ac); display: none; z-index: 99; font-weight: bold; text-align: center; }
 #appBody { display: none; }
 .danger { background: #ff4d4d; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
@@ -51,18 +51,14 @@ textarea.form-control { min-height: 70px; }
 
   <div class="p on" id="t-post">
     <h2><i class="fa-solid fa-plus"></i> Post Add</h2>
-    
-    <!-- AUTO PARSER (From Cloudflare file) -->
     <div style="background: rgba(0,255,102,0.04); padding:10px; border-radius:8px; border:1px dashed var(--ln); margin-bottom:15px;">
       <label style="color:var(--ac); margin-top:0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto Post Fill Parser</label>
       <textarea id="autoDetectInp" class="form-control" style="height:60px; font-size:11px;" placeholder="Paste text here... e.g. Name: Solo Leveling, Category: Anime..." oninput="handleAutoDetect()"></textarea>
     </div>
-
-    <!-- BLACK BOX IMAGE FIX GUIDE -->
     <label>Poster Image URL</label>
-    <p style="font-size:10px; color:#ff4d4d; margin:0 0 5px;">⚠️ Telegram link mat daalna varna image Black aayegi. Hamesha public link daalo (e.g. postimages.org ya imgbb.com se upload karke URL yahan paste karo).</p>
-    <input id="pImg" class="form-control" placeholder="https://i.postimg.cc/...jpg">
-    
+    <p style="font-size:10px; color:var(--ac); margin:0 0 5px;">✅ Direct Link System - Ab wsrv proxy nahi hai. Hamesha direct public link daalo (postimages.org / imgbb.com). Telegram link = Black Image.</p>
+    <input id="pImg" class="form-control" placeholder="https://i.postimg.cc/...jpg" oninput="document.getElementById('pImgPrev').src=cdnImg(this.value)">
+    <img id="pImgPrev" src="https://placehold.co/600x338/0d121c/00ff66?text=Preview" style="width:100%; margin-top:8px; border-radius:8px; border:1px solid var(--ln); aspect-ratio:16/9; object-fit:cover;">
     <label>Anime Name *</label><input id="pName" class="form-control" placeholder="Solo Leveling Hindi Sub">
     <label>Category *</label><input id="pCat" class="form-control" placeholder="Action">
     <label>Genres (comma separated)</label><input id="pGen" class="form-control" placeholder="Action, Fantasy">
@@ -88,31 +84,19 @@ textarea.form-control { min-height: 70px; }
     <button class="btn-action" id="btnEp" onclick="addEpisode()">+ Add Episode (Auto Shortener)</button>
   </div>
 
-  <div class="p" id="t-del">
-    <h2><i class="fa-solid fa-trash"></i> Delete Posts</h2>
-    <div id="dlist"></div>
-  </div>
+  <div class="p" id="t-del"><h2><i class="fa-solid fa-trash"></i> Delete Posts</h2><div id="dlist"></div></div>
 
   <div class="p" id="t-sh">
     <h2><i class="fa-solid fa-link"></i> Shorteners</h2>
-    <div class="grid2">
-      <div><label>Domain</label><input id="sD" class="form-control" placeholder="gplinks.com"></div>
-      <div><label>API Key</label><input id="sK" class="form-control"></div>
-    </div>
-    <button class="btn-action" onclick="addSh()">+ Add Shortener</button>
-    <div id="slist" style="margin-top:15px;"></div>
+    <div class="grid2"><div><label>Domain</label><input id="sD" class="form-control" placeholder="gplinks.com"></div><div><label>API Key</label><input id="sK" class="form-control"></div></div>
+    <button class="btn-action" onclick="addSh()">+ Add Shortener</button><div id="slist" style="margin-top:15px;"></div>
   </div>
 
   <div class="p" id="t-vip">
     <h2><i class="fa-solid fa-gem"></i> Create VIP Pass</h2>
-    <div class="grid2">
-      <div><label>User Gmail *</label><input id="vE" class="form-control" placeholder="user@gmail.com"></div>
-      <div><label>Passcode *</label><input id="vP" class="form-control"></div>
-    </div>
-    <label>Duration</label>
-    <select id="vD" class="form-control"><option value="30">30 Days</option><option value="90">90 Days</option><option value="365">1 Year</option></select>
-    <button class="btn-action" onclick="addVip()">+ Add VIP User</button>
-    <div id="vlist" style="margin-top:15px;"></div>
+    <div class="grid2"><div><label>User Gmail *</label><input id="vE" class="form-control" placeholder="user@gmail.com"></div><div><label>Passcode *</label><input id="vP" class="form-control"></div></div>
+    <label>Duration</label><select id="vD" class="form-control"><option value="30">30 Days</option><option value="90">90 Days</option><option value="365">1 Year</option></select>
+    <button class="btn-action" onclick="addVip()">+ Add VIP User</button><div id="vlist" style="margin-top:15px;"></div>
   </div>
 
   <div class="p" id="t-ads">
@@ -142,25 +126,35 @@ textarea.form-control { min-height: 70px; }
 </div>
 
 <script>
-// ==========================================
-// YAHAN APNA USERNAME AUR REPO NAME DAALEIN
-// ==========================================
-const GITHUB_USERNAME = "ringrongringbro-lab"; 
+const GITHUB_USERNAME = "ringrongringbro-lab";
 const GITHUB_REPO = "hindi-subbed-anime";
-// ==========================================
-  
+
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let db={posts:[],vip:[],cfg:{},sh:[],paid:[]}, sha=null;
 
+function cdnImg(u){
+  if(!u) return 'https://placehold.co/600x338/0d121c/00ff66?text=No+Image';
+  return u;
+}
+
+let db={posts:[],vip:[],cfg:{},sh:[],paid:[]}, sha=null;
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
 async function getVk(){ return await H('Hindi Subbed Anime_VK_BULLETPROOF_2024'); }
-async function enc(t,p){ const e=new TextEncoder(); const s=crypto.getRandomValues(new Uint8Array(16)); const iv=crypto.getRandomValues(new Uint8Array(12)); const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:100000,hash:'SHA-256'},await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt']); const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,e.encode(t))); const all=new Uint8Array(s.length+iv.length+ct.length); all.set(s,0); all.set(iv,s.length); all.set(ct,s.length+iv.length); return btoa(String.fromCharCode(...all)); }
+const b64enc = bytes => { let bin=''; for(let i=0;i<bytes.length;i++) bin+=String.fromCharCode(bytes[i]); return btoa(bin); };
+async function enc(t,p){
+  const e=new TextEncoder();
+  const s=crypto.getRandomValues(new Uint8Array(16));
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:100000,hash:'SHA-256'},await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt']);
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,e.encode(t)));
+  const all=new Uint8Array(s.length+iv.length+ct.length);
+  all.set(s,0); all.set(iv,s.length); all.set(ct,s.length+iv.length);
+  return b64enc(all);
+}
 
 function log(t,ok=true){ const el=$('log'); el.textContent=t; el.style.display='block'; el.style.borderColor=ok?'var(--ac)':'#ff4d4d'; setTimeout(()=>el.style.display='none',4000); }
 function tab(t){ document.querySelectorAll('.p').forEach(e=>e.classList.toggle('on',e.id==='t-'+t)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); }
 
-// Auto parser logic
 function handleAutoDetect() {
   const text = $('autoDetectInp').value.trim();
   if (!text) return;
@@ -183,36 +177,33 @@ async function loadFromGithub(){
   const tok=$('ghTok').value.trim();
   if(!tok) return log('GitHub Token daaliye',false);
   $('btnLoad').disabled=true; $('btnLoad').textContent='Verifying...';
-  
   try{
     const r=await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data/data.json`,{headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'}});
     if(r.status===404){ db={posts:[],vip:[],cfg:{},sh:[],paid:[]}; sha=null; log('Fresh start. Ready!'); }
-    else{ 
-      if(!r.ok) throw new Error("Invalid Token"); 
-      const j=await r.json(); sha=j.sha; 
-      const raw=atob(j.content.replace(/\n/g,'')); const content=JSON.parse(decodeURIComponent(escape(raw))); 
+    else{
+      if(!r.ok) throw new Error("Invalid Token");
+      const j=await r.json(); sha=j.sha;
+      const raw=atob(j.content.replace(/\n/g,'')); const content=JSON.parse(decodeURIComponent(escape(raw)));
       db.posts=content.posts||[]; db.vip=content.vip||[]; db.cfg=content.cfg||{}; db.sh=content.sh||[];
-      ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ if($('c_'+k)) $('c_'+k).value=db.cfg[k]||''; }); 
-      log(`Login Success!`); 
+      ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ if($('c_'+k)) $('c_'+k).value=db.cfg[k]||''; });
+      log(`Login Success!`);
     }
     $('loginSection').style.display='none';
     $('appBody').style.display='block';
     renderAll();
-  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Unlock Panel'; } 
-  $('btnLoad').disabled=false; 
+  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Unlock Panel'; }
+  $('btnLoad').disabled=false;
 }
 
-function renderAll(){ 
-  $('plist').innerHTML=db.posts.map(p=>`<div class="row"><div><b style="color:var(--ac);">${esc(p.name)}</b><br><small style="color:var(--mu)">${p.eps.length} eps</small></div></div>`).join(''); 
-  renderEpSel(); 
+function renderAll(){
+  $('plist').innerHTML=db.posts.map(p=>`<div class="row"><div><b style="color:var(--ac);">${esc(p.name)}</b><br><small style="color:var(--mu)">${p.eps.length} eps</small></div></div>`).join('');
+  renderEpSel();
   $('dlist').innerHTML=db.posts.map((p,i)=>`<div class="row"><div>${esc(p.name)}</div><button class="danger" onclick="delPost(${i})">Delete</button></div>`).join('');
   $('slist').innerHTML=db.sh.map((s,i)=>`<div class="row"><div>${esc(s.d)}</div><button class="danger" onclick="db.sh.splice(${i},1);renderAll()">Del</button></div>`).join('');
 }
 function renderEpSel(){ const q=$('eSearch').value.toLowerCase(); const filtered=db.posts.filter(p=>p.name.toLowerCase().includes(q)); $('eP').innerHTML=filtered.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join(''); }
-
 function delPost(i){ if(confirm('Delete?')){ db.posts.splice(i,1); renderAll(); log('Deleted'); } }
 function addSh(){ const d=$('sD').value.trim().replace(/^https?:\/\//,'').replace(/\/.*/,''); const k=$('sK').value.trim(); if(!d||!k) return; db.sh.push({d,k}); $('sD').value=$('sK').value=''; renderAll(); log('Added'); }
-
 function addPost(){
   const name=$('pName').value.trim(); if(!name) return log('Name required',false);
   db.posts.unshift({id:Date.now().toString(36),img:$('pImg').value.trim(),name,cat:$('pCat').value.trim(),gen:$('pGen').value.split(',').map(s=>s.trim()).filter(Boolean),yr:$('pYr').value.trim(),story:$('pSt').value.trim(),updated:Date.now(),eps:[]});
@@ -223,29 +214,47 @@ async function addEpisode(){
   const post=db.posts.find(x=>x.id===$('eP').value); if(!post) return log('Post select karo',false);
   const real=$('eDl').value.trim(); if(!real) return log('Real DL daalo',false);
   if(!db.sh.length) return log('Shortener add karo pehle',false);
-  
+
   $('btnEp').textContent = 'Generating Links...';
-  
+
   const epId = Date.now().toString(36);
-  // Important URL Fix for shortener
-  const baseUrl = db.cfg.web ? db.cfg.web.replace(/\/$/, '') : window.location.href.split('/').slice(0,-1).join('/');
-  const targetUrl = `${baseUrl}/verify.html?id=${post.id}&ep=${epId}&done=1`;
-  
-  const shorts=[];
-  for(const s of db.sh){ 
-    try{ 
-      const r=await fetch(`https://${s.d}/api?api=${encodeURIComponent(s.k)}&url=${encodeURIComponent(targetUrl)}`); 
-      const j=await r.json(); const l=j.shortenedUrl||j.short_url; 
-      if(l) shorts.push(l); 
-    }catch(e){} 
+
+  // FIXED: AUTO URL DETECTOR for 404 Bug
+  let baseUrl = db.cfg.web? db.cfg.web.trim().replace(/\/$/, '') : window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+
+  if(baseUrl.startsWith('file:')) {
+      $('btnEp').textContent = '+ Add Episode';
+      return log('Local file me shortener kaam nahi karega! PUSH karne ke baad LIVE site pe add karein.', false);
   }
-  
+
+  const targetUrl = `${baseUrl}/verify.html?id=${post.id}&ep=${epId}&done=1`;
+
+  const shorts=[];
+  for(const s of db.sh){
+    try{
+      const r = await fetch(`https://${s.d}/api?api=${encodeURIComponent(s.k)}&url=${encodeURIComponent(targetUrl)}`);
+      const text = await r.text();
+      let l = null;
+
+      // UNIVERSAL PARSER for Shrtfly / GP Links / ShrinkMe
+      try {
+          const j = JSON.parse(text);
+          l = j.shortenedUrl || j.short_url || j.shortUrl || j.url || (j.data && (j.data.url || j.data.short_url));
+      } catch(e) {
+          const m = text.match(/https?:\/\/[^\s"']+/);
+          if(m) l = m[0];
+      }
+
+      if(l) shorts.push(l);
+    }catch(e){ console.log("Shortener API Error:", e); }
+  }
+
   if(!shorts.length) { $('btnEp').textContent = '+ Add Episode'; return log('Shortener API fail',false); }
 
   const vk=await getVk();
   const pd=await enc(real, vk);
   let play=$('ePl').value.trim(), lock=0; if(play && $('ePw').value.trim()){ play=await enc(play, $('ePw').value.trim()); lock=1; }
-  
+
   post.eps.push({id:epId, s:$('eS').value.trim()||'01', n:$('eN').value.trim(), q:$('eQl').value, play, lock, pd, short:shorts});
   $('eN').value=$('eDl').value=''; $('btnEp').textContent = '+ Add Episode';
   log('Episode Added Successfully!');
@@ -256,19 +265,17 @@ async function addVip(){ const email=$('vE').value.trim().toLowerCase(), pass=$(
 async function pushToGithub(){
   const tok=$('ghTok').value.trim();
   ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ const el=$('c_'+k); if(el) db.cfg[k]=el.value.trim(); });
-  db.cfg.sh = db.sh; 
-  
+  db.cfg.sh = db.sh;
   $('btnPush').disabled=true; $('btnPush').textContent='Pushing...';
   try{
     const pub={posts:db.posts.map(p=>{ const {eps,...rest}=p; return {...rest, eps: eps.map(({dl,...e})=>e)}; }), vip:db.vip, cfg:db.cfg, sh:db.sh};
     const jsonStr=JSON.stringify(pub,null,2);
     const content=btoa(unescape(encodeURIComponent(jsonStr)));
     const body={message:`Site Update ${new Date().toISOString()}`,content}; if(sha) body.sha=sha;
-    
     const r=await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data/data.json`,{method:'PUT',headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.content.sha; 
+    if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.content.sha;
     log(`✅ Pushed to Live Site Successfully!`);
-  }catch(e){ log('Push fail: '+e.message,false); } 
+  }catch(e){ log('Push fail: '+e.message,false); }
   $('btnPush').disabled=false; $('btnPush').textContent='🚀 Push to GitHub (Save Data)';
 }
 </script></body></html>

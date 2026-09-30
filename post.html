@@ -34,7 +34,6 @@ async function init(){
   POST=p;
   document.title=p.name+' - Hindi Subbed Anime';
 
-  // SEO - keywords + OG like Cloudflare file
   const metaDesc=document.querySelector('meta[name="description"]');
   if(metaDesc) metaDesc.content=p.name+' Hindi Subbed - Watch Online';
 
@@ -46,11 +45,11 @@ async function init(){
         <p><a class="chip" href="index.html?c=${encodeURIComponent(kk(p.cat))}">${esc(p.cat)}</a> ${gens(p).map(g=>`<a class="chip" href="index.html?g=${encodeURIComponent(kk(g))}">${esc(g)}</a>`).join(' ')}</p>
         <p class="mu">${esc(p.yr||'')} ${p.keywords? '• '+esc(p.keywords.slice(0,80)) : ''}</p>
         <p style="margin-top:8px">${esc(p.story||'')}</p>
+        ${CFG.tg ? `<a href="${esc(CFG.tg)}" target="_blank" class="chip on" style="background:#0088cc;border-color:#0088cc;color:#fff;display:inline-block;margin-top:10px;font-weight:bold;">✈️ Join Telegram</a>` : ''}
       </div>
     </div>
   `;
 
-  // group by quality like Cloudflare
   const byQ={FHD:[],HD:[],SD:[]};
   (p.eps||[]).forEach(e=>{
     if(!byQ[e.q]) byQ[e.q]=[];
@@ -75,10 +74,8 @@ async function init(){
 
 function goVerify(i){
   const e=EPS[i];
-  // anti-bypass: set pending for verify.html
   setPending(e.id);
   sessionStorage.setItem('pending_post', POST.id);
-  // go to verify page with post id + ep id - shortener solve ke baad real link milega
   location.href=`verify.html?id=${encodeURIComponent(POST.id)}&ep=${encodeURIComponent(e.id)}`;
 }
 

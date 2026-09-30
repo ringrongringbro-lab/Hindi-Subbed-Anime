@@ -3,126 +3,138 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin - Hindi Subbed</title>
 <meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--bg:#0f1115;--pn:#1a1d26;--ln:#2a2f40;--tx:#e6e8f0;--mu:#8b92a8;--ac:#ff8c00;--ok:#22c55e;--rd:#ef4444}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 system-ui}
-.w{max-width:760px;margin:auto;padding:12px 12px 90px}
-h1{font-size:20px;color:var(--ac);text-align:center;}
-h2{font-size:16px;color:var(--ac);border-bottom:1px solid var(--ln);padding-bottom:6px;margin:18px 0 8px}
-label{display:block;margin:10px 0 4px;color:var(--mu);font-size:11px;font-weight:700;text-transform:uppercase}
-input,select,textarea{width:100%;background:var(--pn);border:1px solid var(--ln);color:var(--tx);border-radius:10px;padding:11px;outline:none}
-textarea{min-height:70px}
-button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-.btn{background:var(--pn);border:1px solid var(--ln);color:var(--tx)}
-.btn.on{background:var(--ac);color:#111;border-color:var(--ac)}
-.go{background:var(--ac);color:#111;width:100%;margin-top:12px;padding:13px;font-size:15px}
-.go2{background:var(--ok);color:#111;width:100%;margin-top:12px;padding:14px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;border:1px solid var(--ln);background:var(--pn);border-radius:10px;margin-top:8px}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0;position:sticky;top:0;background:var(--bg);z-index:5}
-.p{display:none}.p.on{display:block}
-#log{position:fixed;left:12px;right:12px;bottom:12px;background:#111;padding:12px;border-radius:12px;border:1px solid var(--ln);display:none;z-index:99;white-space:pre-wrap;text-align:center;font-weight:bold;}
-#appBody{display:none;}
-</style></head><body><div class="w">
+:root { --bg: #05080c; --card: #0d121c; --ln: rgba(0, 255, 102, 0.15); --tx: #f0fdf4; --mu: #94a3b8; --ac: #00ff66; --gradient: linear-gradient(135deg, #00ff66 0%, #00f2fe 100%); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--tx); font: 14px/1.5 'Segoe UI', system-ui; padding-bottom: 50px; }
+.w { max-width: 760px; margin: auto; padding: 12px; }
+h1 { font-size: 20px; color: var(--ac); text-align: center; margin-bottom: 20px; }
+h2 { font-size: 16px; color: var(--ac); border-bottom: 1px solid var(--ln); padding-bottom: 6px; margin: 18px 0 12px; }
+label { display: block; margin: 10px 0 4px; color: var(--mu); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.form-control { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--ln); color: #fff; border-radius: 8px; padding: 11px; outline: none; font-size: 13px; }
+.form-control:focus { border-color: var(--ac); }
+textarea.form-control { min-height: 70px; }
+.btn-action { width: 100%; padding: 12px; background: var(--gradient); color: #000; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; margin-top: 12px; font-size: 14px; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0; border-bottom: 1px solid var(--ln); margin-bottom: 15px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.ep-btn { background: rgba(0,255,102,0.06); border: 1px solid var(--ln); color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+.ep-btn.on { background: var(--ac); color: #000; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px; border: 1px solid var(--ln); background: rgba(0,0,0,0.2); border-radius: 8px; margin-top: 8px; }
+.p { display: none; } .p.on { display: block; }
+#log { position: fixed; left: 12px; right: 12px; bottom: 12px; background: #111e16; color: #fff; padding: 12px; border-radius: 12px; border: 1px solid var(--ac); display: none; z-index: 99; font-weight: bold; text-align: center; }
+#appBody { display: none; }
+.danger { background: #ff4d4d; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+</style>
+</head><body><div class="w">
 
-<h1>⚙️ Admin Panel</h1>
+<h1><i class="fa-solid fa-gear"></i> Admin Control Center</h1>
 
-<!-- LOGIN SECTION (SIRF TOKEN) -->
-<div id="loginSection" style="background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:25px 20px;margin-top:20px;text-align:center;">
-  <h2 style="border:none; margin:0 0 5px 0;">🔑 Admin Login</h2>
-  <p style="color:var(--mu);font-size:12px;margin-bottom:20px;">Sirf apna GitHub Token (Password) daaliye.</p>
-  
-  <input id="ghTok" type="password" placeholder="ghp_xxxx..." style="text-align:center; font-weight:bold; font-size:16px; letter-spacing:1px; margin-bottom:15px;">
-  
-  <button class="go" id="btnLoad" onclick="loadFromGithub()">🔓 Login Panel</button>
+<div id="loginSection" style="background:var(--card); border:1px solid var(--ln); border-radius:12px; padding:25px 20px; text-align:center;">
+  <p style="color:var(--mu); font-size:12px; margin-bottom:20px;">Secure GitHub Token Login</p>
+  <input id="ghTok" type="password" class="form-control" placeholder="ghp_xxxx..." style="text-align:center; font-weight:bold; letter-spacing:1px; margin-bottom:15px;">
+  <button class="btn-action" id="btnLoad" onclick="loadFromGithub()">🔓 Unlock Panel</button>
 </div>
 
-<!-- MAIN ADMIN AREA -->
 <div id="appBody">
   <div class="tabs">
-    <button data-t="post" class="btn on" onclick="tab('post')">Add Post</button>
-    <button data-t="ep" class="btn" onclick="tab('ep')">Episodes</button>
-    <button data-t="del" class="btn" onclick="tab('del')">Delete</button>
-    <button data-t="sh" class="btn" onclick="tab('sh')">Shorteners</button>
-    <button data-t="vip" class="btn" onclick="tab('vip')">VIP</button>
-    <button data-t="ads" class="btn" onclick="tab('ads')">Ads & App</button>
-    <button data-t="set" class="btn" onclick="tab('set')">Settings</button>
-    <button data-t="push" class="btn" onclick="tab('push')" style="background:var(--ok);color:#111">🚀 Push</button>
+    <button data-t="post" class="ep-btn on" onclick="tab('post')">Add Post</button>
+    <button data-t="ep" class="ep-btn" onclick="tab('ep')">Episodes</button>
+    <button data-t="del" class="ep-btn" onclick="tab('del')">Delete</button>
+    <button data-t="sh" class="ep-btn" onclick="tab('sh')">Shorteners</button>
+    <button data-t="vip" class="ep-btn" onclick="tab('vip')">VIP</button>
+    <button data-t="ads" class="ep-btn" onclick="tab('ads')">Ads & App</button>
+    <button data-t="set" class="ep-btn" onclick="tab('set')">Settings</button>
+    <button data-t="push" class="ep-btn" onclick="tab('push')" style="background:#00b359; color:#fff;">🚀 Push Live</button>
   </div>
 
   <div class="p on" id="t-post">
-    <h2>Post Add</h2>
-    <label>Poster Image URL</label><input id="pImg" placeholder="https://...">
-    <label>Anime Name *</label><input id="pName" placeholder="Solo Leveling Hindi Sub">
-    <label>Category *</label><input id="pCat" placeholder="Action">
-    <label>Genres (comma separated)</label><input id="pGen" placeholder="Action, Fantasy">
-    <label>Release Year</label><input id="pYr" placeholder="2024">
-    <label>Story</label><textarea id="pSt"></textarea>
-    <button class="go" onclick="addPost()">+ Add Post</button>
-    <div id="plist"></div>
+    <h2><i class="fa-solid fa-plus"></i> Post Add</h2>
+    
+    <!-- AUTO PARSER (From Cloudflare file) -->
+    <div style="background: rgba(0,255,102,0.04); padding:10px; border-radius:8px; border:1px dashed var(--ln); margin-bottom:15px;">
+      <label style="color:var(--ac); margin-top:0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto Post Fill Parser</label>
+      <textarea id="autoDetectInp" class="form-control" style="height:60px; font-size:11px;" placeholder="Paste text here... e.g. Name: Solo Leveling, Category: Anime..." oninput="handleAutoDetect()"></textarea>
+    </div>
+
+    <!-- BLACK BOX IMAGE FIX GUIDE -->
+    <label>Poster Image URL</label>
+    <p style="font-size:10px; color:#ff4d4d; margin:0 0 5px;">⚠️ Telegram link mat daalna varna image Black aayegi. Hamesha public link daalo (e.g. postimages.org ya imgbb.com se upload karke URL yahan paste karo).</p>
+    <input id="pImg" class="form-control" placeholder="https://i.postimg.cc/...jpg">
+    
+    <label>Anime Name *</label><input id="pName" class="form-control" placeholder="Solo Leveling Hindi Sub">
+    <label>Category *</label><input id="pCat" class="form-control" placeholder="Action">
+    <label>Genres (comma separated)</label><input id="pGen" class="form-control" placeholder="Action, Fantasy">
+    <label>Release Year</label><input id="pYr" class="form-control" placeholder="2024">
+    <label>Story</label><textarea id="pSt" class="form-control"></textarea>
+    <button class="btn-action" onclick="addPost()">Publish Post</button>
+    <div id="plist" style="margin-top:15px;"></div>
   </div>
 
   <div class="p" id="t-ep">
-    <h2>Add Episode</h2>
-    <input id="eSearch" placeholder="Search post..." oninput="renderEpSel()" style="margin-bottom:6px">
-    <select id="eP"></select>
+    <h2><i class="fa-solid fa-video"></i> Add Episode</h2>
+    <input id="eSearch" class="form-control" placeholder="Search post..." oninput="renderEpSel()" style="margin-bottom:6px">
+    <select id="eP" class="form-control"></select>
     <div class="grid2">
-      <div><label>Season</label><input id="eS" value="01"></div>
-      <div><label>Episode No *</label><input id="eN" placeholder="01"></div>
+      <div><label>Season</label><input id="eS" class="form-control" value="01"></div>
+      <div><label>Episode No *</label><input id="eN" class="form-control" placeholder="01"></div>
     </div>
-    <label>Quality</label><select id="eQl"><option>FHD</option><option selected>HD</option><option>SD</option></select>
-    <label>Play Link (Optional)</label><input id="ePl" placeholder="https://...">
-    <label>Play Password (Optional)</label><input id="ePw" placeholder="Leave blank if no lock">
-    <label>Real Download Link (Google Drive etc.) *</label><input id="eDl" placeholder="https://...">
-    <button class="go" id="btnEp" onclick="addEpisode()">+ Add Episode (Auto Shortener)</button>
+    <label>Quality</label>
+    <select id="eQl" class="form-control"><option>FHD</option><option selected>HD</option><option>SD</option></select>
+    <label>Play Link (Optional)</label><input id="ePl" class="form-control" placeholder="https://...">
+    <label>Play Password (Optional)</label><input id="ePw" class="form-control" placeholder="Leave blank if no lock">
+    <label>Real Download Link (Google Drive etc.) *</label><input id="eDl" class="form-control" placeholder="https://...">
+    <button class="btn-action" id="btnEp" onclick="addEpisode()">+ Add Episode (Auto Shortener)</button>
   </div>
 
   <div class="p" id="t-del">
-    <h2>Delete Posts</h2>
+    <h2><i class="fa-solid fa-trash"></i> Delete Posts</h2>
     <div id="dlist"></div>
   </div>
 
   <div class="p" id="t-sh">
-    <h2>Shorteners</h2>
+    <h2><i class="fa-solid fa-link"></i> Shorteners</h2>
     <div class="grid2">
-      <div><label>Domain</label><input id="sD" placeholder="gplinks.com"></div>
-      <div><label>API Key</label><input id="sK"></div>
+      <div><label>Domain</label><input id="sD" class="form-control" placeholder="gplinks.com"></div>
+      <div><label>API Key</label><input id="sK" class="form-control"></div>
     </div>
-    <button class="go" onclick="addSh()">+ Add Shortener</button>
-    <div id="slist"></div>
+    <button class="btn-action" onclick="addSh()">+ Add Shortener</button>
+    <div id="slist" style="margin-top:15px;"></div>
   </div>
 
   <div class="p" id="t-vip">
-    <h2>Create VIP Pass</h2>
+    <h2><i class="fa-solid fa-gem"></i> Create VIP Pass</h2>
     <div class="grid2">
-      <div><label>User Gmail *</label><input id="vE" placeholder="user@gmail.com"></div>
-      <div><label>Passcode *</label><input id="vP"></div>
+      <div><label>User Gmail *</label><input id="vE" class="form-control" placeholder="user@gmail.com"></div>
+      <div><label>Passcode *</label><input id="vP" class="form-control"></div>
     </div>
-    <label>Duration</label><select id="vD"><option value="30">30 Days</option><option value="90">90 Days</option><option value="365">1 Year</option></select>
-    <button class="go" onclick="addVip()">+ Add VIP User</button>
-    <div id="vlist"></div>
+    <label>Duration</label>
+    <select id="vD" class="form-control"><option value="30">30 Days</option><option value="90">90 Days</option><option value="365">1 Year</option></select>
+    <button class="btn-action" onclick="addVip()">+ Add VIP User</button>
+    <div id="vlist" style="margin-top:15px;"></div>
   </div>
 
   <div class="p" id="t-ads">
-    <h2>Ads & APK Link</h2>
-    <label>Header Ad Code</label><textarea id="c_head"></textarea>
-    <label>Body Ad (Popunder)</label><textarea id="c_body"></textarea>
-    <label>Banner Ad (iframe)</label><textarea id="c_ban"></textarea>
-    <label>App APK Link</label><input id="c_apk" placeholder="https://...">
+    <h2><i class="fa-solid fa-rectangle-ad"></i> Ads & APK Link</h2>
+    <label>Header Ad Code</label><textarea id="c_head" class="form-control"></textarea>
+    <label>Body Ad (Popunder)</label><textarea id="c_body" class="form-control"></textarea>
+    <label>Banner Ad (iframe)</label><textarea id="c_ban" class="form-control"></textarea>
+    <label>App APK Link</label><input id="c_apk" class="form-control" placeholder="https://...">
   </div>
 
   <div class="p" id="t-set">
-    <h2>Site Settings</h2>
-    <label>Telegram Channel Link</label><input id="c_tg" placeholder="https://t.me/...">
-    <label>Telegram Group</label><input id="c_gr">
-    <label>Website URL</label><input id="c_web">
-    <label>Site Name</label><input id="c_site" value="Hindi Subbed Anime">
+    <h2><i class="fa-solid fa-globe"></i> Site Settings</h2>
+    <label>Telegram Channel Link</label><input id="c_tg" class="form-control" placeholder="https://t.me/...">
+    <label>Telegram Group</label><input id="c_gr" class="form-control">
+    <label>Website URL (Bohot zaroori hai shortener ke liye)</label><input id="c_web" class="form-control" placeholder="https://yourname.github.io/repo">
+    <label>Site Name</label><input id="c_site" class="form-control" value="Hindi Subbed Anime">
   </div>
 
   <div class="p" id="t-push">
-    <h2>Save Changes to Live Site</h2>
+    <h2><i class="fa-solid fa-cloud-arrow-up"></i> Save Changes to Live Site</h2>
     <p style="color:var(--mu);font-size:12px">Jab aap posts add kar lein, toh yahan se PUSH dabayein taaki site live update ho jaye.</p>
-    <button class="go2" id="btnPush" onclick="pushToGithub()">🚀 Push to GitHub (Save Data)</button>
+    <button class="btn-action" id="btnPush" onclick="pushToGithub()">🚀 Push to GitHub (Save Data)</button>
   </div>
 </div>
 
@@ -142,40 +154,56 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 let db={posts:[],vip:[],cfg:{},sh:[],paid:[]}, sha=null;
 
 const H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
-
-// Background encryption magic (Ab PIN ki zarurat nahi)
 async function getVk(){ return await H('Hindi Subbed Anime_VK_BULLETPROOF_2024'); }
 async function enc(t,p){ const e=new TextEncoder(); const s=crypto.getRandomValues(new Uint8Array(16)); const iv=crypto.getRandomValues(new Uint8Array(12)); const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:100000,hash:'SHA-256'},await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt']); const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,e.encode(t))); const all=new Uint8Array(s.length+iv.length+ct.length); all.set(s,0); all.set(iv,s.length); all.set(ct,s.length+iv.length); return btoa(String.fromCharCode(...all)); }
 
-function log(t,ok=true){ const el=$('log'); el.textContent=t; el.style.display='block'; el.style.borderColor=ok?'#22c55e':'#ef4444'; setTimeout(()=>el.style.display='none',4000); }
+function log(t,ok=true){ const el=$('log'); el.textContent=t; el.style.display='block'; el.style.borderColor=ok?'var(--ac)':'#ff4d4d'; setTimeout(()=>el.style.display='none',4000); }
 function tab(t){ document.querySelectorAll('.p').forEach(e=>e.classList.toggle('on',e.id==='t-'+t)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); }
 
-// SIRF TOKEN SE LOGIN
+// Auto parser logic
+function handleAutoDetect() {
+  const text = $('autoDetectInp').value.trim();
+  if (!text) return;
+  const lines = text.split(/\n/);
+  let parsed = { name: "", category: "", release: "", genres: "" };
+  const aliases = [["name", "name"], ["title", "name"], ["category", "category"], ["release", "release"], ["year", "release"], ["genres", "genres"], ["genre", "genres"]];
+  lines.forEach(line => {
+    for (const [alias, field] of aliases) {
+      const m = line.match(new RegExp("^[ \\t]*" + alias + "[ \\t]*[-:=]+[ \\t]*(.*)", "i"));
+      if (m) { parsed[field] = m[1].trim(); break; }
+    }
+  });
+  if (parsed.name) $('pName').value = parsed.name;
+  if (parsed.category) $('pCat').value = parsed.category;
+  if (parsed.genres) $('pGen').value = parsed.genres;
+  if (parsed.release) $('pYr').value = parsed.release;
+}
+
 async function loadFromGithub(){
   const tok=$('ghTok').value.trim();
   if(!tok) return log('GitHub Token daaliye',false);
-  $('btnLoad').disabled=true; $('btnLoad').textContent='Verifying Token...';
+  $('btnLoad').disabled=true; $('btnLoad').textContent='Verifying...';
   
   try{
     const r=await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data/data.json`,{headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'}});
     if(r.status===404){ db={posts:[],vip:[],cfg:{},sh:[],paid:[]}; sha=null; log('Fresh start. Ready!'); }
     else{ 
-      if(!r.ok) throw new Error("Invalid GitHub Token"); 
+      if(!r.ok) throw new Error("Invalid Token"); 
       const j=await r.json(); sha=j.sha; 
       const raw=atob(j.content.replace(/\n/g,'')); const content=JSON.parse(decodeURIComponent(escape(raw))); 
       db.posts=content.posts||[]; db.vip=content.vip||[]; db.cfg=content.cfg||{}; db.sh=content.sh||[];
       ['head','body','ban','apk','tg','gr','web','site'].forEach(k=>{ if($('c_'+k)) $('c_'+k).value=db.cfg[k]||''; }); 
-      log(`Login Success! ${db.posts.length} posts loaded`); 
+      log(`Login Success!`); 
     }
     $('loginSection').style.display='none';
     $('appBody').style.display='block';
     renderAll();
-  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Login Panel'; } 
+  }catch(e){ log('Login Fail: '+e.message,false); $('btnLoad').textContent='🔓 Unlock Panel'; } 
   $('btnLoad').disabled=false; 
 }
 
 function renderAll(){ 
-  $('plist').innerHTML=db.posts.map(p=>`<div class="row"><div><b>${esc(p.name)}</b><br><small>${p.eps.length} eps</small></div></div>`).join(''); 
+  $('plist').innerHTML=db.posts.map(p=>`<div class="row"><div><b style="color:var(--ac);">${esc(p.name)}</b><br><small style="color:var(--mu)">${p.eps.length} eps</small></div></div>`).join(''); 
   renderEpSel(); 
   $('dlist').innerHTML=db.posts.map((p,i)=>`<div class="row"><div>${esc(p.name)}</div><button class="danger" onclick="delPost(${i})">Delete</button></div>`).join('');
   $('slist').innerHTML=db.sh.map((s,i)=>`<div class="row"><div>${esc(s.d)}</div><button class="danger" onclick="db.sh.splice(${i},1);renderAll()">Del</button></div>`).join('');
@@ -199,7 +227,8 @@ async function addEpisode(){
   $('btnEp').textContent = 'Generating Links...';
   
   const epId = Date.now().toString(36);
-  const baseUrl = window.location.href.split('/').slice(0,-1).join('/');
+  // Important URL Fix for shortener
+  const baseUrl = db.cfg.web ? db.cfg.web.replace(/\/$/, '') : window.location.href.split('/').slice(0,-1).join('/');
   const targetUrl = `${baseUrl}/verify.html?id=${post.id}&ep=${epId}&done=1`;
   
   const shorts=[];
@@ -218,7 +247,7 @@ async function addEpisode(){
   let play=$('ePl').value.trim(), lock=0; if(play && $('ePw').value.trim()){ play=await enc(play, $('ePw').value.trim()); lock=1; }
   
   post.eps.push({id:epId, s:$('eS').value.trim()||'01', n:$('eN').value.trim(), q:$('eQl').value, play, lock, pd, short:shorts});
-  $('eN').value=$('eDl').value=''; $('btnEp').textContent = '+ Add Episode (Auto Shortener)';
+  $('eN').value=$('eDl').value=''; $('btnEp').textContent = '+ Add Episode';
   log('Episode Added Successfully!');
 }
 
@@ -238,7 +267,7 @@ async function pushToGithub(){
     
     const r=await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data/data.json`,{method:'PUT',headers:{Authorization:`Bearer ${tok}`,Accept:'application/vnd.github.v3+json'},body:JSON.stringify(body)});
     if(!r.ok) throw new Error(await r.text()); const j=await r.json(); sha=j.content.sha; 
-    log(`✅ Pushed to Live Site Successfully!`,true);
+    log(`✅ Pushed to Live Site Successfully!`);
   }catch(e){ log('Push fail: '+e.message,false); } 
   $('btnPush').disabled=false; $('btnPush').textContent='🚀 Push to GitHub (Save Data)';
 }

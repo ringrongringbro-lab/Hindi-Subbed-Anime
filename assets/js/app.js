@@ -3,20 +3,17 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const kk = s => String(s||'').trim().toLowerCase();
 
-// Auto Genre Detection: Handles "#Action #Adventure", "Action, Adventure", and "Action Adventure" automatically.
 const gens = p => {
   let raw = (p.gen||[]).join(',');
-  raw = raw.replace(/#/g, ','); // Hashtag to comma
-  if(!raw.includes(',') && raw.includes(' ')) raw = raw.replace(/\s+/g, ','); // Space to comma if no comma exist
+  raw = raw.replace(/#/g, ','); 
+  if(!raw.includes(',') && raw.includes(' ')) raw = raw.replace(/\s+/g, ','); 
   return raw.split(/[,.;\/|]+/).map(s=>s.trim()).filter(Boolean);
 };
 
 const isUrl = u => /^https?:\/\//i.test(u);
 
-// SHA-256 hash for VIP / verify
 const H = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
 
-// AES-GCM Encrypt / Decrypt
 async function enc(t,p){
   const e=new TextEncoder();
   const s=crypto.getRandomValues(new Uint8Array(16));
@@ -44,10 +41,10 @@ function inj(h,el){
   el.append(t.content);
 }
 
+// Fixed: Proxy removed for instant image loading
 function cdnImg(u){
-  if(!u) return 'https://placehold.co/600x338/232326/9f9fa9?text=No+Image';
-  if(u.includes('wsrv.nl')) return u;
-  return `https://wsrv.nl/?url=${encodeURIComponent(u)}&output=jpg&q=80`;
+  if(!u) return 'https://placehold.co/600x338/0d121c/00ff66?text=No+Image';
+  return u; 
 }
 
 let CFG={};
@@ -69,7 +66,6 @@ async function load(){
   }
 }
 
-// Security: LocalStorage taaki New Tab shortener issue na aaye
 function setPending(epId){
   localStorage.setItem('pending_ep', epId);
   localStorage.setItem('pending_time', Date.now().toString());
@@ -78,7 +74,6 @@ function isHumanVerified(){
   return localStorage.getItem('human_verified')==='1';
 }
 
-// PWA Support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }

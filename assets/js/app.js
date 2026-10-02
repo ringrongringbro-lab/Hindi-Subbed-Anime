@@ -48,7 +48,7 @@ function cdnImg(u){
 let CFG={};
 async function load(){
   try{
-    const r=await fetch('data/data.json?'+Date.now(),{cache:'no-store'});
+    const r=await fetch('data/data.json?t='+Date.now(),{cache:'no-store'});
     if(!r.ok) throw new Error('data.json missing');
     const d=await r.json();
     CFG=d.cfg||{};
@@ -72,6 +72,7 @@ function isHumanVerified(){
   return localStorage.getItem('human_verified')==='1';
 }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
-}
+// Service worker disable kar diya gaya hai taki updates jaldi dikhein
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+// }

@@ -2,18 +2,10 @@
   "posts": [
     {
       "id": "mumxkixv",
-      "img": "https://t.me/hindisubinganime/704",
+      "img": "https://i.ibb.co/XYZ/wild-last-boss.jpg",
       "name": "A Wild Last Boss Appeared!",
       "cat": "Hindi Subbed Anime",
-      "gen": [
-        "Action",
-        "Adventure",
-        "Fantasy",
-        "isekai",
-        "game",
-        "reincarnation",
-        "comedy"
-      ],
+      "gen": ["Action", "Adventure", "Fantasy", "isekai", "game", "reincarnation", "comedy"],
       "yr": "2026",
       "story": "Ik number anime",
       "updated": 1790701721064,
@@ -26,58 +18,9 @@
           "play": "",
           "lock": 0,
           "pd": "4WyIsTzzWdqR3E+PjbJy6ljJkoICYH4HqhOgXDGilNi+JIw37cAvHEEJFGfjAVUrPUr+m84VgtCqqoqS8w4lOmy+nyesEZDDOBMRV9RZDIuWAP2C12Jq0GmzQj2yH+qQGEtRWWQpahgjxBIaNUyqHh1jIH4b9UY7H78=",
-          "short": [
-            "https://gplinks.co/PtRVePIW"
-          ]
+          "short": [] 
         }
       ]
-    },
-    {
-      "id": "mech-marie-2025",
-      "img": "https://i.ibb.co/0jQvY1m/mechanical-marie.jpg",
-      "name": "Mechanical Marie Hindi Subbed | Kikaijikake no Marie Hindi Sub (Complete)",
-      "cat": "Romance",
-      "gen": [
-        "Romance",
-        "Comedy",
-        "Sci-Fi"
-      ],
-      "yr": "2025",
-      "keywords": "mechanical marie hindi subbed kikaijikake no marie hindi sub romance complete ybx anime",
-      "expiry": 0,
-      "story": "Arthur, the heir to a conglomerate, hires Marie as a maid who acts like a robot to avoid falling in love.",
-      "updated": 1735689600000,
-      "eps": [
-        {
-          "id": "ep_mm_01",
-          "s": "01",
-          "n": "01",
-          "q": "FHD",
-          "play": "",
-          "lock": 0,
-          "pd": "ENCRYPTED_REAL_DL_WITH_GLOBAL_VK",
-          "short": [
-            "https://gplinks.com/demo-verify-link"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "dad-hero-2025",
-      "img": "https://i.ibb.co/XYZ/dad-hero-mom-spirit.jpg",
-      "name": "Dad is a Hero, Mom is a Spirit, I'm a Reincarnator Hindi Subbed (Complete)",
-      "cat": "Reincarnation",
-      "gen": [
-        "Reincarnation",
-        "Fantasy",
-        "Comedy"
-      ],
-      "yr": "2025",
-      "keywords": "dad is a hero mom is a spirit reincarnator hindi subbed complete",
-      "expiry": 0,
-      "story": "A man reincarnates with his hero father and spirit mother in a fantasy world.",
-      "updated": 1735680000000,
-      "eps": []
     }
   ],
   "vip": [],

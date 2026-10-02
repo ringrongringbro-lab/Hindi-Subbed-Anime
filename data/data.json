@@ -45,14 +45,14 @@
     "site": "Hindi Subbed Anime",
     "sh": [
       {
-        "d": "shrtfly.com",
+        "d": "https://shrtfly.com/api",
         "k": "1ea55c6020a2cba2b2e8bc545ab93ca2"
       }
     ]
   },
   "sh": [
     {
-      "d": "shrtfly.com",
+      "d": "https://shrtfly.com/api",
       "k": "1ea55c6020a2cba2b2e8bc545ab93ca2"
     }
   ]

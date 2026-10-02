@@ -5,7 +5,15 @@
       "img": "https://i.ibb.co/XYZ/wild-last-boss.jpg",
       "name": "A Wild Last Boss Appeared!",
       "cat": "Hindi Subbed Anime",
-      "gen": ["Action", "Adventure", "Fantasy", "isekai", "game", "reincarnation", "comedy"],
+      "gen": [
+        "Action",
+        "Adventure",
+        "Fantasy",
+        "isekai",
+        "game",
+        "reincarnation",
+        "comedy"
+      ],
       "yr": "2026",
       "story": "Ik number anime",
       "updated": 1790701721064,
@@ -18,7 +26,7 @@
           "play": "",
           "lock": 0,
           "pd": "4WyIsTzzWdqR3E+PjbJy6ljJkoICYH4HqhOgXDGilNi+JIw37cAvHEEJFGfjAVUrPUr+m84VgtCqqoqS8w4lOmy+nyesEZDDOBMRV9RZDIuWAP2C12Jq0GmzQj2yH+qQGEtRWWQpahgjxBIaNUyqHh1jIH4b9UY7H78=",
-          "short": [] 
+          "short": []
         }
       ]
     }

@@ -56,7 +56,7 @@ textarea.form-control { min-height: 70px; }
       <textarea id="autoDetectInp" class="form-control" style="height:60px; font-size:11px;" placeholder="Paste text here... e.g. Name: Solo Leveling, Category: Anime..." oninput="handleAutoDetect()"></textarea>
     </div>
     <label>Poster Image URL</label>
-    <p style="font-size:10px; color:var(--ac); margin:0 0 5px;">✅ Direct Link System - Ab wsrv proxy nahi hai. Hamesha direct public link daalo (postimages.org / imgbb.com). Telegram link = Black Image.</p>
+    <p style="font-size:10px; color:var(--ac); margin:0 0 5px;">✅ Hamesha direct public link daalo (postimages.org / imgbb.com). Telegram link yahan nahi chalega.</p>
     <input id="pImg" class="form-control" placeholder="https://i.postimg.cc/...jpg" oninput="document.getElementById('pImgPrev').src=cdnImg(this.value)">
     <img id="pImgPrev" src="https://placehold.co/600x338/0d121c/00ff66?text=Preview" style="width:100%; margin-top:8px; border-radius:8px; border:1px solid var(--ln); aspect-ratio:16/9; object-fit:cover;">
     <label>Anime Name *</label><input id="pName" class="form-control" placeholder="Solo Leveling Hindi Sub">
@@ -88,7 +88,7 @@ textarea.form-control { min-height: 70px; }
 
   <div class="p" id="t-sh">
     <h2><i class="fa-solid fa-link"></i> Shorteners</h2>
-    <div class="grid2"><div><label>Domain</label><input id="sD" class="form-control" placeholder="gplinks.com"></div><div><label>API Key</label><input id="sK" class="form-control"></div></div>
+    <div class="grid2"><div><label>Domain</label><input id="sD" class="form-control" placeholder="shrtfly.com"></div><div><label>API Key</label><input id="sK" class="form-control"></div></div>
     <button class="btn-action" onclick="addSh()">+ Add Shortener</button><div id="slist" style="margin-top:15px;"></div>
   </div>
 
@@ -111,7 +111,9 @@ textarea.form-control { min-height: 70px; }
     <h2><i class="fa-solid fa-globe"></i> Site Settings</h2>
     <label>Telegram Channel Link</label><input id="c_tg" class="form-control" placeholder="https://t.me/...">
     <label>Telegram Group</label><input id="c_gr" class="form-control">
-    <label>Website URL (Bohot zaroori hai shortener ke liye)</label><input id="c_web" class="form-control" placeholder="https://yourname.github.io/repo">
+    <label>Website URL (Bohot zaroori hai shortener ke liye)</label>
+    <p style="font-size:10px; color:var(--ac); margin:0 0 5px;">Aapki live website ka proper link (Ex: https://ringrongringbro-lab.github.io/hindi-subbed-anime)</p>
+    <input id="c_web" class="form-control" placeholder="https://yourname.github.io/repo">
     <label>Site Name</label><input id="c_site" class="form-control" value="Hindi Subbed Anime">
   </div>
 
@@ -216,27 +218,26 @@ async function addEpisode(){
   if(!db.sh.length) return log('Shortener add karo pehle',false);
 
   $('btnEp').textContent = 'Generating Links...';
-
   const epId = Date.now().toString(36);
 
-  // FIXED: AUTO URL DETECTOR for 404 Bug
+  // Auto URL detect karta hai, par admin ko pehle set karna zaruri hai
   let baseUrl = db.cfg.web? db.cfg.web.trim().replace(/\/$/, '') : window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
-
   if(baseUrl.startsWith('file:')) {
       $('btnEp').textContent = '+ Add Episode';
-      return log('Local file me shortener kaam nahi karega! PUSH karne ke baad LIVE site pe add karein.', false);
+      return log('Local file me shortener kaam nahi karega! Setting me Website URL update karein.', false);
   }
 
   const targetUrl = `${baseUrl}/verify.html?id=${post.id}&ep=${epId}&done=1`;
-
   const shorts=[];
+  
   for(const s of db.sh){
     try{
-      const r = await fetch(`https://${s.d}/api?api=${encodeURIComponent(s.k)}&url=${encodeURIComponent(targetUrl)}`);
+      // PROXY FIX: CORS error bypass ke liye AllOrigins proxy ka use
+      const targetApiUrl = `https://${s.d}/api?api=${encodeURIComponent(s.k)}&url=${encodeURIComponent(targetUrl)}`;
+      const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetApiUrl)}`);
       const text = await r.text();
       let l = null;
 
-      // UNIVERSAL PARSER for Shrtfly / GP Links / ShrinkMe
       try {
           const j = JSON.parse(text);
           l = j.shortenedUrl || j.short_url || j.shortUrl || j.url || (j.data && (j.data.url || j.data.short_url));
@@ -244,12 +245,11 @@ async function addEpisode(){
           const m = text.match(/https?:\/\/[^\s"']+/);
           if(m) l = m[0];
       }
-
       if(l) shorts.push(l);
-    }catch(e){ console.log("Shortener API Error:", e); }
+    }catch(e){ console.log("Shortener Error:", e); }
   }
 
-  if(!shorts.length) { $('btnEp').textContent = '+ Add Episode'; return log('Shortener API fail',false); }
+  if(!shorts.length) { $('btnEp').textContent = '+ Add Episode'; return log('Shortener fail ho gaya (CORS/API error)',false); }
 
   const vk=await getVk();
   const pd=await enc(real, vk);
